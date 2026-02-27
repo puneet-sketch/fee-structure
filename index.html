@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commission Model — Business Case</title>
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-dark: #4834D4;
+            --accent: #00CEC9;
+            --accent-light: #81ECEC;
+            --bg: #0F0E17;
+            --bg-card: #1A1929;
+            --text: #FFFFFE;
+            --text-secondary: #A7A9BE;
+            --border: #2D2B55;
+            --green: #00B894;
+            --red: #E17055;
+            --yellow: #FDCB6E;
+            --high: #E17055;
+            --low: #00B894;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(15,14,23,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); padding: 0 2rem;
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        .logo {
+            font-size: 1.25rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            margin-left: 2rem; font-size: 0.9rem; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+
+        /* SECTIONS */
+        section { padding: 5rem 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.15em; color: var(--primary-light); margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem;
+        }
+        .section-desc {
+            color: var(--text-secondary); font-size: 1.05rem;
+            max-width: 640px; margin-bottom: 3rem;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 10rem 2rem 5rem; text-align: center; position: relative;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(ellipse at 50% 0%, rgba(108,92,231,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800;
+            margin-bottom: 1.5rem; letter-spacing: -0.02em;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.2rem; color: var(--text-secondary); max-width: 660px; margin: 0 auto 3rem; }
+        .hero-stats {
+            display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat .num {
+            font-size: 2rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-stat .label { font-size: 0.85rem; color: var(--text-secondary); }
+        .divider {
+            height: 1px; max-width: 400px; margin: 0 auto;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+        }
+        .card.highlight { border-color: var(--primary); }
+        .card h3 { font-size: 1.15rem; margin-bottom: 1rem; }
+
+        /* PRINCIPLE GRID */
+        .principle-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;
+        }
+        @media (max-width: 768px) { .principle-grid { grid-template-columns: 1fr; } }
+        .principle-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.75rem; text-align: center;
+        }
+        .principle-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .principle-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .principle-card p { color: var(--text-secondary); font-size: 0.85rem; }
+
+        /* HOW IT WORKS */
+        .how-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
+        }
+        @media (max-width: 768px) { .how-grid { grid-template-columns: 1fr; } }
+        .how-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 2rem;
+        }
+        .how-card .num {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(108,92,231,0.2); color: var(--primary-light);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem;
+        }
+        .how-card h4 { font-size: 1rem; margin-bottom: 0.35rem; }
+        .how-card p { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* CALCULATOR */
+        .calc-section {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+        }
+        .calc-controls {
+            padding: 2rem 2.5rem; border-bottom: 1px solid var(--border);
+        }
+        .calc-controls h3 { margin-bottom: 1.5rem; font-size: 1.15rem; }
+        .slider-row {
+            display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+        }
+        .slider-row label {
+            font-size: 0.85rem; color: var(--text-secondary); min-width: 120px;
+        }
+        .slider-row label .val { color: var(--text); font-weight: 700; font-size: 1rem; }
+        input[type="range"] {
+            -webkit-appearance: none; flex: 1; min-width: 200px; height: 6px;
+            background: var(--border); border-radius: 3px; outline: none; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px;
+            background: var(--primary); border-radius: 50%;
+            border: 3px solid var(--bg); box-shadow: 0 0 0 2px var(--primary); cursor: pointer;
+        }
+        .calc-results {
+            display: grid; grid-template-columns: 1fr auto 1fr;
+        }
+        @media (max-width: 768px) {
+            .calc-results { grid-template-columns: 1fr; }
+            .calc-vs { border-left: none !important; border-right: none !important;
+                       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        }
+        .trader-panel { padding: 2rem 2.5rem; }
+        .trader-panel h4 {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-yes { background: var(--accent); }
+        .dot-no { background: var(--primary-light); }
+        .trader-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 0; font-size: 0.9rem;
+        }
+        .trader-row .label { color: var(--text-secondary); }
+        .trader-row .val { font-weight: 600; }
+        .trader-row.sep { border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.75rem; }
+        .trader-row .val.big {
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .role-tag {
+            display: inline-block; padding: 0.15rem 0.6rem; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+        }
+        .role-tag.high { background: rgba(225,112,85,0.15); color: var(--high); }
+        .role-tag.low { background: rgba(0,184,148,0.15); color: var(--low); }
+        .calc-vs {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 2rem 1.5rem;
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+            min-width: 140px;
+        }
+        .vs-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .vs-value { font-size: 1.5rem; font-weight: 800; color: var(--primary-light); }
+        .vs-sub { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+        /* EXAMPLE */
+        .flow-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2.5rem; margin-top: 2rem;
+        }
+        .flow-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 2rem; }
+        .flow-step {
+            position: relative; padding-left: 2.5rem; margin-bottom: 2rem;
+        }
+        .flow-step::before {
+            content: ''; position: absolute; left: 8px; top: 28px; bottom: -20px;
+            width: 2px; background: var(--border);
+        }
+        .flow-step:last-child::before { display: none; }
+        .flow-dot {
+            position: absolute; left: 0; top: 6px; width: 18px; height: 18px;
+            border-radius: 50%; border: 2px solid var(--primary); background: var(--bg);
+        }
+        .flow-step.active .flow-dot { background: var(--primary); }
+        .flow-step h4 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+        .flow-step p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+        .val-high { color: var(--high); font-weight: 600; }
+        .val-low { color: var(--low); font-weight: 600; }
+        .val-accent { color: var(--accent); font-weight: 600; }
+        .val-green { color: var(--green); font-weight: 600; }
+        .val-red { color: var(--red); font-weight: 600; }
+
+        /* SIMULATION */
+        .sim-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+        }
+        .sim-card h3 {
+            font-size: 1.1rem; margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .badge {
+            background: rgba(108,92,231,0.2); color: var(--primary-light);
+            padding: 0.2rem 0.7rem; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .sim-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .sim-table th {
+            text-align: left; padding: 0.7rem 0.75rem;
+            background: rgba(108,92,231,0.08); color: var(--primary-light);
+            font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+        }
+        .sim-table td {
+            padding: 0.6rem 0.75rem; border-bottom: 1px solid rgba(45,43,85,0.5);
+            color: var(--text-secondary); font-size: 0.85rem;
+        }
+        .sim-table tr:hover td { background: rgba(108,92,231,0.03); }
+        .sim-table td:first-child { color: var(--text); font-weight: 600; }
+        .no-fee { color: var(--text-secondary); font-style: italic; opacity: 0.5; }
+
+        /* P&L */
+        .pnl-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        .pnl-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.5rem; position: relative; overflow: hidden;
+        }
+        .pnl-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .pnl-card.profit::before { background: var(--green); }
+        .pnl-card.loss::before { background: var(--red); }
+        .pnl-card.neutral::before { background: var(--primary); }
+        .pnl-card .user-name {
+            font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .pnl-card .pnl-row {
+            display: flex; justify-content: space-between; padding: 0.3rem 0; font-size: 0.8rem;
+        }
+        .pnl-card .pnl-row .label { color: var(--text-secondary); }
+        .pnl-card .pnl-row .val { font-weight: 600; }
+        .pnl-card .pnl-total {
+            margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; font-weight: 700;
+        }
+        .pnl-card .pnl-total .val { font-size: 1.15rem; }
+        .pnl-card .pnl-total .val.green { color: var(--green); }
+        .pnl-card .pnl-total .val.red { color: var(--red); }
+        .user-dot {
+            width: 24px; height: 24px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+        }
+        .user-dot.a { background: rgba(0,206,201,0.2); color: var(--accent); }
+        .user-dot.b { background: rgba(162,155,254,0.2); color: var(--primary-light); }
+        .user-dot.c { background: rgba(253,203,110,0.2); color: var(--yellow); }
+        .user-dot.d { background: rgba(225,112,85,0.2); color: var(--high); }
+
+        /* LEDGER PROOF */
+        .ledger-proof {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.5rem 2rem; margin-top: 2rem;
+            display: flex; align-items: center; justify-content: center;
+            gap: 1.5rem; flex-wrap: wrap; text-align: center;
+        }
+        .ledger-item { display: flex; flex-direction: column; align-items: center; }
+        .ledger-item .name { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+        .ledger-item .amount { font-size: 1.1rem; font-weight: 700; }
+        .ledger-plus { font-size: 1.25rem; color: var(--text-secondary); }
+        .ledger-equals {
+            font-size: 1.25rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--primary-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* COMPARISON */
+        .compare-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2.5rem;
+        }
+        .compare-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.5rem; text-align: center;
+        }
+        .compare-card.ours { border-color: var(--primary); }
+        .compare-card .name {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--primary-light); margin-bottom: 0.5rem;
+        }
+        .compare-card .big { font-size: 1.4rem; font-weight: 800; }
+        .compare-card .sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem; }
+        .compare-card .rate { margin-top: 0.75rem; font-size: 0.8rem; color: var(--accent); }
+
+        .good { color: var(--green); font-weight: 600; }
+        .bad { color: var(--red); font-weight: 600; }
+
+        /* REASONS */
+        .reasons-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+        }
+        @media (max-width: 768px) { .reasons-grid { grid-template-columns: 1fr; } }
+        .reasons-grid ul {
+            font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.25rem; list-style: disc;
+        }
+        .reasons-grid li { margin-bottom: 0.5rem; }
+
+        /* FAQ */
+        .faq-list { max-width: 720px; }
+        .faq-item { border-bottom: 1px solid var(--border); }
+        .faq-q {
+            padding: 1.25rem 0; font-weight: 600; font-size: 1.05rem;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            user-select: none;
+        }
+        .faq-q::after {
+            content: '+'; font-size: 1.5rem; color: var(--primary-light); transition: transform 0.3s;
+        }
+        .faq-item.open .faq-q::after { content: '\2212'; }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+                  color: var(--text-secondary); font-size: 0.95rem; }
+        .faq-item.open .faq-a { max-height: 400px; }
+        .faq-a p { padding-bottom: 1.25rem; }
+
+        footer {
+            padding: 3rem 2rem; border-top: 1px solid var(--border);
+            text-align: center; color: var(--text-secondary); font-size: 0.85rem;
+        }
+
+        .role-toggle {
+            padding: 0.5rem 1rem; border-radius: 8px;
+            background: var(--bg); border: 1px solid var(--border);
+            color: var(--text-secondary); font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .role-toggle.active-toggle {
+            border-color: var(--primary); background: rgba(108,92,231,0.15);
+            color: var(--primary-light);
+        }
+
+        /* DASHBOARD */
+        .dash-metrics {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem;
+        }
+        @media (max-width: 900px) { .dash-metrics { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 520px) { .dash-metrics { grid-template-columns: 1fr; } }
+        .dash-metric {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.5rem; position: relative; overflow: hidden;
+        }
+        .dash-metric::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .dash-metric.m1::before { background: var(--primary); }
+        .dash-metric.m2::before { background: var(--accent); }
+        .dash-metric.m3::before { background: var(--green); }
+        .dash-metric.m4::before { background: var(--yellow); }
+        .dash-metric .metric-label {
+            font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;
+            letter-spacing: 0.08em; margin-bottom: 0.5rem;
+        }
+        .dash-metric .metric-value {
+            font-size: 1.6rem; font-weight: 800;
+        }
+        .dash-metric .metric-sub {
+            font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;
+        }
+
+
+        /* Fee curve chart */
+        .chart-wrap {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+        }
+        .chart-wrap h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+        .chart-wrap .chart-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .chart-container { position: relative; width: 100%; height: 320px; }
+        canvas { width: 100%; height: 100%; }
+        .chart-legend {
+            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem;
+        }
+        .chart-legend span {
+            font-size: 0.85rem; color: var(--text-secondary);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .legend-line { width: 20px; height: 3px; border-radius: 2px; }
+
+        /* Fee schedule mini table */
+        .fee-schedule-mini { margin-top: 1.5rem; }
+        .fee-schedule-mini table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .fee-schedule-mini th {
+            text-align: left; padding: 0.6rem 0.75rem;
+            background: rgba(108,92,231,0.08); color: var(--primary-light);
+            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+        }
+        .fee-schedule-mini td {
+            padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(45,43,85,0.5);
+            color: var(--text-secondary);
+        }
+        .fee-schedule-mini tr:hover td { background: rgba(108,92,231,0.03); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <div class="logo">YourPlatform</div>
+        <div class="nav-links">
+            <a href="#how">How It Works</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#calculator">Calculator</a>
+            <a href="#example">Example</a>
+            <a href="#compare">Compare</a>
+            <a href="#faq">FAQ</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <h1>A <span>smarter way</span> to charge commission</h1>
+    <p>Our commission adjusts to the trade. Low-risk trades pay less. High-uncertainty trades pay more. No one ever gets trapped. And entering is always free.</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="num">~2%</div>
+            <div class="label">Target platform commission</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num">$0</div>
+            <div class="label">Fee to enter any trade</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num">$0</div>
+            <div class="label">Fee if you lose</div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- THE PROBLEM -->
+<section>
+    <div class="container">
+        <div class="section-label">The Problem</div>
+        <div class="section-title">Why a flat percentage doesn't work</div>
+        <div class="section-desc">A flat 1-2% commission sounds simple, but it breaks in prediction markets.</div>
+
+        <div class="principle-grid">
+            <div class="principle-card">
+                <div class="icon" style="color:var(--red);">&#10060;</div>
+                <h4>Traps users at low prices</h4>
+                <p>If your position drops to 2 cents and the fee is 1%, the fee can be worth more than the position itself. Users can't afford to exit.</p>
+            </div>
+            <div class="principle-card">
+                <div class="icon" style="color:var(--red);">&#10060;</div>
+                <h4>Wipes out small profits</h4>
+                <p>Buying at 95 cents to win 5 cents profit? A 1% fee on $0.95 wipes out most of that 5-cent upside. High-confidence bets become pointless.</p>
+            </div>
+            <div class="principle-card">
+                <div class="icon" style="color:var(--red);">&#10060;</div>
+                <h4>No incentive to add liquidity</h4>
+                <p>Both sides of a trade pay the same fee. There's no reward for the user who posts an order and waits, making the market deeper for everyone.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR SOLUTION -->
+<section id="how">
+    <div class="container">
+        <div class="section-label">Our Solution</div>
+        <div class="section-title">Three principles behind our commission</div>
+        <div class="section-desc">The same model used by Kalshi (the largest US-regulated prediction market, $263M revenue in 2025), adapted for our platform.</div>
+
+        <div class="how-grid">
+            <div class="how-card">
+                <div class="num">1</div>
+                <h4>Fee scales with uncertainty</h4>
+                <p>At 50/50 odds (maximum uncertainty), the fee is at its highest. As a contract moves toward 0 or 100, the fee shrinks toward zero. This means: cheap contracts have tiny fees, expensive/sure-thing contracts have tiny fees, and mid-range contracts have the highest fees.</p>
+            </div>
+            <div class="how-card">
+                <div class="num">2</div>
+                <h4>Active traders pay more, patient traders pay less</h4>
+                <p>If you hit someone else's resting order (you want to trade <em>now</em>), you pay a standard fee. If you post an order and wait for someone to come to you, you pay 1/3 the fee. This rewards users who make the market deeper.</p>
+            </div>
+            <div class="how-card">
+                <div class="num">3</div>
+                <h4>Fee is charged only when you exit</h4>
+                <p>Entering a trade is free. You only pay commission when you sell your position or when the event resolves. If you lose and get $0, your fee is $0 too &mdash; we never charge more than your payout.</p>
+            </div>
+            <div class="how-card">
+                <div class="num">4</div>
+                <h4>Fee can never exceed your payout</h4>
+                <p>Mathematically guaranteed. As your position drops in value, the fee drops even faster. The maximum fee on any trade is 5.7% of what you invested &mdash; and that only happens on extreme longshots. At typical prices, it's 1-3%.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHAT USERS SEE -->
+<section style="padding-top:2rem;">
+    <div class="container">
+        <div class="section-label">What Users See</div>
+        <div class="section-title">Each trader sees their own fee before they trade</div>
+        <div class="section-desc">Two people in the same trade pay different commission amounts. Each person's fee depends on which side they're on and whether they're the one initiating.</div>
+
+        <div class="card highlight" style="margin-bottom:2.5rem;">
+            <h3>How it looks for a user</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1rem;">
+                <div>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
+                        <strong style="color:var(--text);">Before placing a trade</strong>, the user sees:
+                    </p>
+                    <div style="background:var(--bg);border-radius:10px;padding:1.25rem;font-size:0.9rem;">
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Contract price</span><span>$0.40</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Quantity</span><span>100 contracts</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Trade cost</span><span>$40.00</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Entry fee</span><span style="color:var(--green);font-weight:600;">$0.00</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-top:1px solid var(--border);margin-top:0.3rem;padding-top:0.6rem;"><span style="font-weight:600;">You pay now</span><span style="font-weight:700;font-size:1.05rem;">$40.00</span></div>
+                        <div style="margin-top:0.75rem;padding:0.6rem;background:rgba(108,92,231,0.1);border-radius:8px;font-size:0.8rem;color:var(--text-secondary);">
+                            Exit fee (estimated): <strong style="color:var(--text);">$0.96</strong> &mdash; charged only when you sell or the event resolves
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1rem;">
+                        <strong style="color:var(--text);">At settlement</strong> (if they win):
+                    </p>
+                    <div style="background:var(--bg);border-radius:10px;padding:1.25rem;font-size:0.9rem;">
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Payout (won)</span><span style="color:var(--green);">$100.00</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Commission</span><span style="color:var(--high);">&minus;$0.96</span></div>
+                        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-top:1px solid var(--border);margin-top:0.3rem;padding-top:0.6rem;"><span style="font-weight:600;">You receive</span><span style="font-weight:700;font-size:1.05rem;color:var(--green);">$99.04</span></div>
+                        <div style="margin-top:0.75rem;padding:0.6rem;background:rgba(0,184,148,0.1);border-radius:8px;font-size:0.8rem;color:var(--text-secondary);">
+                            Net profit: <strong style="color:var(--green);">+$59.04</strong> on a $40 investment
+                        </div>
+                    </div>
+                    <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:1rem;">
+                        If they <strong>lost</strong>: payout = $0, commission = $0. They only lose what they invested.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- REVENUE DASHBOARD -->
+<section id="dashboard" style="padding-top:2rem;">
+    <div class="container">
+        <div class="section-label">Revenue Dashboard</div>
+        <div class="section-title">Commission structure at a glance</div>
+        <div class="section-desc">How our commission scales across all contract prices. Visualized for every scenario.</div>
+
+        <!-- Key Metrics -->
+        <div class="dash-metrics">
+            <div class="dash-metric m1">
+                <div class="metric-label">Target Commission Rate</div>
+                <div class="metric-value" style="color:var(--primary-light);">~2.0%</div>
+                <div class="metric-sub">Combined both sides at 50/50</div>
+            </div>
+            <div class="dash-metric m2">
+                <div class="metric-label">Peak Commission (per contract)</div>
+                <div class="metric-value" style="color:var(--accent);" id="dashPeak">$0.0200</div>
+                <div class="metric-sub">At 50/50 odds (combined)</div>
+            </div>
+            <div class="dash-metric m3">
+                <div class="metric-label">Initiator Rate at 50/50</div>
+                <div class="metric-value" style="color:var(--high);">3.0%</div>
+                <div class="metric-sub">Higher fee for active traders</div>
+            </div>
+            <div class="dash-metric m4">
+                <div class="metric-label">Patient Trader Rate at 50/50</div>
+                <div class="metric-value" style="color:var(--low);">1.0%</div>
+                <div class="metric-sub">Discount for liquidity providers</div>
+            </div>
+        </div>
+
+        <!-- Fee Curve Graph -->
+        <div class="chart-wrap">
+            <h3>Commission Curve &mdash; How fees change across all prices</h3>
+            <p class="chart-desc">The curve peaks at 50/50 odds where uncertainty is highest, and drops to near-zero at the extremes. This ensures cheap contracts stay tradeable and sure-thing contracts aren't overcharged.</p>
+            <div class="chart-container">
+                <canvas id="feeCurveChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <span><span class="legend-line" style="background:var(--high);"></span> Initiating trader</span>
+                <span><span class="legend-line" style="background:var(--low);"></span> Patient trader</span>
+                <span><span class="legend-line" style="background:var(--primary-light);opacity:0.6;"></span> Combined (platform revenue)</span>
+            </div>
+        </div>
+
+        <!-- Effective Rate Chart -->
+        <div class="chart-wrap">
+            <h3>Effective Commission Rate &mdash; What percentage each trader pays</h3>
+            <p class="chart-desc">The initiating trader's percentage is higher on cheap contracts (more upside) and lower on expensive ones. The patient trader always pays about 1/3 of the initiating trader.</p>
+            <div class="chart-container">
+                <canvas id="rateChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <span><span class="legend-line" style="background:var(--high);"></span> Initiating trader rate</span>
+                <span><span class="legend-line" style="background:var(--low);"></span> Patient trader rate</span>
+                <span><span class="legend-line" style="background:var(--yellow);"></span> 10% on winnings (for comparison)</span>
+            </div>
+        </div>
+
+        <!-- Fee Schedule Table -->
+        <div class="chart-wrap fee-schedule-mini">
+            <h3 style="margin-bottom:1rem;">Commission Schedule</h3>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contract Price</th>
+                            <th>Initiator Commission</th>
+                            <th>Patient Trader Commission</th>
+                            <th>Platform Total</th>
+                            <th>Initiator %</th>
+                            <th>Patient %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feeScheduleBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INTERACTIVE CALCULATOR -->
+<section id="calculator" style="padding-top:2rem;">
+    <div class="container">
+        <div class="section-label">Try It Yourself</div>
+        <div class="section-title">See what each side of a trade pays</div>
+        <div class="section-desc">Move the sliders. The two sides of the same trade always pay different commission amounts.</div>
+
+        <div class="calc-section">
+            <div class="calc-controls">
+                <h3>Set Up a Trade</h3>
+                <div class="slider-row">
+                    <label>Yes Price <span class="val" id="dPrice">$0.50</span></label>
+                    <input type="range" id="sPrice" min="1" max="99" value="50">
+                </div>
+                <div class="slider-row">
+                    <label>Contracts <span class="val" id="dQty">100</span></label>
+                    <input type="range" id="sQty" min="1" max="1000" value="100">
+                </div>
+                <div class="slider-row">
+                    <label>Who initiates?</label>
+                    <div style="display:flex;gap:0.75rem;">
+                        <button id="btnYesTaker" class="role-toggle active-toggle" onclick="setTaker('yes')">Yes Buyer initiates</button>
+                        <button id="btnNoTaker" class="role-toggle" onclick="setTaker('no')">No Buyer initiates</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calc-results">
+                <!-- YES BUYER -->
+                <div class="trader-panel">
+                    <h4><span class="dot dot-yes"></span> Yes Buyer <span class="role-tag" id="yesRole">high</span></h4>
+                    <div class="trader-row"><span class="label">Buys at</span><span class="val" id="yBuysAt">$0.50</span></div>
+                    <div class="trader-row"><span class="label">Trade cost</span><span class="val" id="yCost">$50.00</span></div>
+                    <div class="trader-row"><span class="label">Commission</span><span class="val" id="yFeeTot">$1.50</span></div>
+                    <div class="trader-row"><span class="label">Commission rate</span><span class="val" id="yRate" style="color:var(--yellow);">3.00%</span></div>
+                    <div class="trader-row sep"><span class="label">Total paid</span><span class="val big" id="yTotal">$51.50</span></div>
+                    <div class="trader-row"><span class="label">If Yes wins</span><span class="val" id="yWin" style="color:var(--green);">+$48.50</span></div>
+                    <div class="trader-row"><span class="label">If Yes loses</span><span class="val" id="yLose" style="color:var(--red);">-$51.50</span></div>
+                </div>
+
+                <!-- VS -->
+                <div class="calc-vs">
+                    <div class="vs-label">Platform Revenue</div>
+                    <div class="vs-value" id="vsPlatform">$2.00</div>
+                    <div class="vs-sub" id="vsPct">2.00% of total</div>
+                    <div style="margin-top:1.5rem;">
+                        <div class="vs-label">Yes buyer rate</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--accent);" id="vsYRate">3.00%</div>
+                    </div>
+                    <div style="margin-top:0.75rem;">
+                        <div class="vs-label">No buyer rate</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--primary-light);" id="vsNRate">1.00%</div>
+                    </div>
+                </div>
+
+                <!-- NO BUYER -->
+                <div class="trader-panel">
+                    <h4><span class="dot dot-no"></span> No Buyer <span class="role-tag" id="noRole">low</span></h4>
+                    <div class="trader-row"><span class="label">Buys at</span><span class="val" id="nBuysAt">$0.50</span></div>
+                    <div class="trader-row"><span class="label">Trade cost</span><span class="val" id="nCost">$50.00</span></div>
+                    <div class="trader-row"><span class="label">Commission</span><span class="val" id="nFeeTot">$0.50</span></div>
+                    <div class="trader-row"><span class="label">Commission rate</span><span class="val" id="nRate" style="color:var(--yellow);">1.00%</span></div>
+                    <div class="trader-row sep"><span class="label">Total paid</span><span class="val big" id="nTotal">$50.50</span></div>
+                    <div class="trader-row"><span class="label">If No wins</span><span class="val" id="nWin" style="color:var(--green);">+$49.50</span></div>
+                    <div class="trader-row"><span class="label">If No loses</span><span class="val" id="nLose" style="color:var(--red);">-$50.50</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WORKED EXAMPLE -->
+<section id="example">
+    <div class="container">
+        <div class="section-label">Real Example</div>
+        <div class="section-title">4 users, 4 trades, 1 resolution</div>
+        <div class="section-desc">A complete walkthrough showing every commission charge. Entry is free. Commission is deducted only when a user exits.</div>
+
+        <!-- Trade Journal -->
+        <div class="sim-card">
+            <h3><span class="badge">TRADES</span> What happens, in order</h3>
+            <div style="overflow-x:auto;">
+                <table class="sim-table">
+                    <thead>
+                        <tr>
+                            <th>Trade</th>
+                            <th>What happened</th>
+                            <th>Buyer</th>
+                            <th>Seller</th>
+                            <th>Side</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>T1</td>
+                            <td>Market opens</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>&mdash;</td>
+                            <td>Yes</td>
+                            <td>200</td>
+                            <td>$0.40</td>
+                            <td class="no-fee">Free entry</td>
+                        </tr>
+                        <tr>
+                            <td>T1</td>
+                            <td>Market opens</td>
+                            <td style="color:var(--primary-light);">B</td>
+                            <td>&mdash;</td>
+                            <td>No</td>
+                            <td>200</td>
+                            <td>$0.60</td>
+                            <td class="no-fee">Free entry</td>
+                        </tr>
+                        <tr style="background:rgba(0,206,201,0.03);">
+                            <td>T2</td>
+                            <td>A sells some</td>
+                            <td style="color:var(--yellow);">C</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Yes</td>
+                            <td>120</td>
+                            <td>$0.25</td>
+                            <td style="color:var(--high);">A pays $0.90</td>
+                        </tr>
+                        <tr style="background:rgba(253,203,110,0.03);">
+                            <td>T3</td>
+                            <td>C sells some</td>
+                            <td style="color:var(--high);">D</td>
+                            <td style="color:var(--yellow);">C</td>
+                            <td>Yes</td>
+                            <td>60</td>
+                            <td>$0.55</td>
+                            <td style="color:var(--high);">C pays $0.59</td>
+                        </tr>
+                        <tr style="background:rgba(0,206,201,0.03);">
+                            <td>T4</td>
+                            <td>A sells rest</td>
+                            <td style="color:var(--high);">D</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Yes</td>
+                            <td>40</td>
+                            <td>$0.70</td>
+                            <td style="color:var(--high);">A pays $0.34</td>
+                        </tr>
+                        <tr style="background:rgba(0,184,148,0.06);">
+                            <td>&mdash;</td>
+                            <td colspan="6" style="color:var(--green);font-weight:700;text-align:center;letter-spacing:0.05em;">EVENT RESOLVES: YES WINS</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Commission Events -->
+        <div class="sim-card" style="border-color:var(--primary);">
+            <h3><span class="badge" style="background:rgba(225,112,85,0.2);color:var(--high);">COMMISSIONS</span> Every commission charge &mdash; only at exit</h3>
+            <div style="overflow-x:auto;">
+                <table class="sim-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Exit Type</th>
+                            <th>Qty</th>
+                            <th>Gross Payout</th>
+                            <th>Commission</th>
+                            <th>Net Received</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Sold at T2</td>
+                            <td>120</td>
+                            <td>$30.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.90</td>
+                            <td style="font-weight:700;">$29.10</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td style="color:var(--yellow);">C</td>
+                            <td>Sold at T3</td>
+                            <td>60</td>
+                            <td>$33.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.59</td>
+                            <td style="font-weight:700;">$32.41</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Sold at T4</td>
+                            <td>40</td>
+                            <td>$28.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.34</td>
+                            <td style="font-weight:700;">$27.66</td>
+                        </tr>
+                        <tr style="border-top:2px solid var(--border);">
+                            <td>4</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Won (40 left)</td>
+                            <td>40</td>
+                            <td style="color:var(--green);">$40.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.38</td>
+                            <td style="color:var(--green);font-weight:700;">$39.62</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td style="color:var(--primary-light);">B</td>
+                            <td>Lost</td>
+                            <td>200</td>
+                            <td style="color:var(--red);">$0.00</td>
+                            <td style="font-weight:700;">$0.00 *</td>
+                            <td style="color:var(--red);font-weight:700;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td style="color:var(--yellow);">C</td>
+                            <td>Won (60 left)</td>
+                            <td>60</td>
+                            <td style="color:var(--green);">$60.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.45</td>
+                            <td style="color:var(--green);font-weight:700;">$59.55</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td style="color:var(--high);">D</td>
+                            <td>Won (lot 1)</td>
+                            <td>60</td>
+                            <td style="color:var(--green);">$60.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.59</td>
+                            <td style="color:var(--green);font-weight:700;">$59.41</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td style="color:var(--high);">D</td>
+                            <td>Won (lot 2)</td>
+                            <td>40</td>
+                            <td style="color:var(--green);">$40.00</td>
+                            <td style="color:var(--high);font-weight:700;">$0.34</td>
+                            <td style="color:var(--green);font-weight:700;">$39.66</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:1rem;">
+                * B lost and gets $0 payout. Commission is capped at $0 &mdash; we never charge more than what a user receives.
+            </p>
+        </div>
+
+        <!-- P&L Cards -->
+        <h3 style="font-size:1.15rem;margin-bottom:1.25rem;">What each user made or lost</h3>
+        <div class="pnl-grid">
+            <div class="pnl-card profit">
+                <div class="user-name"><span class="user-dot a">A</span> User A &mdash; Bought 200 Yes at $0.40</div>
+                <div class="pnl-row"><span class="label">Invested</span><span class="val">&minus;$80.00</span></div>
+                <div class="pnl-row"><span class="label">Sold 120 at $0.25</span><span class="val">+$29.10</span></div>
+                <div class="pnl-row"><span class="label">Sold 40 at $0.70</span><span class="val">+$27.66</span></div>
+                <div class="pnl-row"><span class="label">Won on 40 remaining</span><span class="val">+$39.62</span></div>
+                <div class="pnl-row"><span class="label">Total commission paid</span><span class="val" style="color:var(--high);">&minus;$1.62</span></div>
+                <div class="pnl-total"><span>Net Result</span><span class="val green">+$16.38</span></div>
+            </div>
+            <div class="pnl-card loss">
+                <div class="user-name"><span class="user-dot b">B</span> User B &mdash; Bought 200 No at $0.60</div>
+                <div class="pnl-row"><span class="label">Invested</span><span class="val">&minus;$120.00</span></div>
+                <div class="pnl-row"><span class="label">Lost at resolution</span><span class="val">$0.00</span></div>
+                <div class="pnl-row"><span class="label">Total commission paid</span><span class="val">$0.00</span></div>
+                <div class="pnl-total"><span>Net Result</span><span class="val red">&minus;$120.00</span></div>
+            </div>
+            <div class="pnl-card profit">
+                <div class="user-name"><span class="user-dot c">C</span> User C &mdash; Bought 120 Yes at $0.25</div>
+                <div class="pnl-row"><span class="label">Invested</span><span class="val">&minus;$30.00</span></div>
+                <div class="pnl-row"><span class="label">Sold 60 at $0.55</span><span class="val">+$32.41</span></div>
+                <div class="pnl-row"><span class="label">Won on 60 remaining</span><span class="val">+$59.55</span></div>
+                <div class="pnl-row"><span class="label">Total commission paid</span><span class="val" style="color:var(--high);">&minus;$1.04</span></div>
+                <div class="pnl-total"><span>Net Result</span><span class="val green">+$61.96</span></div>
+            </div>
+            <div class="pnl-card profit">
+                <div class="user-name"><span class="user-dot d">D</span> User D &mdash; Bought at $0.55 and $0.70</div>
+                <div class="pnl-row"><span class="label">Invested (60 at $0.55)</span><span class="val">&minus;$33.00</span></div>
+                <div class="pnl-row"><span class="label">Invested (40 at $0.70)</span><span class="val">&minus;$28.00</span></div>
+                <div class="pnl-row"><span class="label">Won on all 100</span><span class="val">+$99.07</span></div>
+                <div class="pnl-row"><span class="label">Total commission paid</span><span class="val" style="color:var(--high);">&minus;$0.93</span></div>
+                <div class="pnl-total"><span>Net Result</span><span class="val green">+$38.07</span></div>
+            </div>
+        </div>
+
+        <!-- Ledger Proof -->
+        <div class="ledger-proof">
+            <div class="ledger-item">
+                <div class="name">User A</div>
+                <div class="amount" style="color:var(--green);">+$16.38</div>
+            </div>
+            <div class="ledger-plus">+</div>
+            <div class="ledger-item">
+                <div class="name">User B</div>
+                <div class="amount" style="color:var(--red);">&minus;$120.00</div>
+            </div>
+            <div class="ledger-plus">+</div>
+            <div class="ledger-item">
+                <div class="name">User C</div>
+                <div class="amount" style="color:var(--green);">+$61.96</div>
+            </div>
+            <div class="ledger-plus">+</div>
+            <div class="ledger-item">
+                <div class="name">User D</div>
+                <div class="amount" style="color:var(--green);">+$38.07</div>
+            </div>
+            <div class="ledger-plus">+</div>
+            <div class="ledger-item">
+                <div class="name">Platform</div>
+                <div class="amount" style="color:var(--accent);">+$3.59</div>
+            </div>
+            <div class="ledger-equals">=&nbsp;&nbsp;$0.00</div>
+        </div>
+        <p style="text-align:center;color:var(--text-secondary);font-size:0.85rem;margin-top:1rem;">
+            Every dollar is accounted for. Platform earned <strong style="color:var(--accent);">$3.59</strong> on a $200 pool = <strong>1.8%</strong> (the missing 0.2% from 2% target is B's waived commission).
+        </p>
+    </div>
+</section>
+
+<!-- INDUSTRY COMPARISON -->
+<section id="compare">
+    <div class="container">
+        <div class="section-label">How We Compare</div>
+        <div class="section-title">Our model vs the industry</div>
+        <div class="section-desc">We benchmarked against every major prediction market. Here's how we stack up.</div>
+
+        <div class="compare-grid">
+            <div class="compare-card">
+                <div class="name">Polymarket</div>
+                <div class="big">~0.1%</div>
+                <div class="sub">Near-zero fees for 3 years. Just started charging Jan 2026.</div>
+                <div class="rate">$23.5B volume in 2025</div>
+            </div>
+            <div class="compare-card">
+                <div class="name">Kalshi</div>
+                <div class="big">~1.15%</div>
+                <div class="sub">Smart pricing on every trade. Both sides pay.</div>
+                <div class="rate">$263M revenue in 2025</div>
+            </div>
+            <div class="compare-card ours">
+                <div class="name">Your Platform</div>
+                <div class="big">~2%</div>
+                <div class="sub">Smart pricing at exit only. Free entry. Losers pay $0.</div>
+                <div class="rate">Target commission rate</div>
+            </div>
+            <div class="compare-card">
+                <div class="name">10% on Winnings</div>
+                <div class="big" style="color:var(--red);">0.5% &ndash; 190%</div>
+                <div class="sub">PredictIt model. Wildly inconsistent effective rates.</div>
+                <div class="rate" style="color:var(--red);">Kills longshot trading</div>
+            </div>
+        </div>
+
+        <!-- Comparison table -->
+        <div class="sim-card" style="border-color:var(--primary);">
+            <h3><span class="badge">COMPARISON</span> What matters most</h3>
+            <div style="overflow-x:auto;">
+                <table class="sim-table" style="font-size:0.8rem;min-width:800px;">
+                    <thead>
+                        <tr>
+                            <th style="width:18%;">What matters</th>
+                            <th style="width:18%;">Polymarket</th>
+                            <th style="width:18%;">Kalshi</th>
+                            <th style="width:18%;background:rgba(108,92,231,0.15);">Ours</th>
+                            <th style="width:18%;">10% on Winnings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Entry cost</td>
+                            <td class="good">$0 for patient traders</td>
+                            <td>Both sides pay</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">Always $0</td>
+                            <td class="good">$0</td>
+                        </tr>
+                        <tr>
+                            <td>What losers pay</td>
+                            <td>Pay at trade time</td>
+                            <td>Pay at trade time</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">$0 &mdash; capped at payout</td>
+                            <td class="good">$0 &mdash; only winners pay</td>
+                        </tr>
+                        <tr>
+                            <td>Commission at 50/50 odds<br><span style="font-size:0.7rem;color:var(--text-secondary);">per 100 contracts</span></td>
+                            <td class="good">$0.05</td>
+                            <td>$2.19 combined</td>
+                            <td style="background:rgba(108,92,231,0.04);">$2.00 combined</td>
+                            <td>$5.00 (if you win)</td>
+                        </tr>
+                        <tr>
+                            <td>Commission on a longshot<br><span style="font-size:0.7rem;color:var(--text-secondary);">buying at 5 cents</span></td>
+                            <td class="good">$0.005</td>
+                            <td class="good">$0.33 (6.7%)</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">$0.29 (5.7%)</td>
+                            <td class="bad">$9.50 (190% of investment!)</td>
+                        </tr>
+                        <tr>
+                            <td>Reward for patient traders</td>
+                            <td class="good">Zero fee + rebates</td>
+                            <td class="good">75% discount</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">67% discount</td>
+                            <td class="bad">None</td>
+                        </tr>
+                        <tr>
+                            <td>Price accuracy</td>
+                            <td class="good">Very high (tiny fees)</td>
+                            <td class="good">High</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">High</td>
+                            <td class="bad">Poor &mdash; fees distort prices by 10-20%</td>
+                        </tr>
+                        <tr>
+                            <td>Revenue sustainability</td>
+                            <td class="bad">Too low to self-sustain</td>
+                            <td class="good">$263M in 2025</td>
+                            <td style="background:rgba(108,92,231,0.04);" class="good">~2% is sustainable</td>
+                            <td style="color:var(--yellow);">Revenue but at cost of volume</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Why not 10% -->
+        <div class="sim-card" style="border-color:var(--red);margin-top:1rem;">
+            <h3 style="color:var(--red);">Why not charge 10% on winnings?</h3>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">
+                It sounds simple &mdash; "you only pay if you win." But the math is brutal for cheap contracts:
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.25rem;">
+                <div style="background:var(--bg);border-radius:10px;padding:1.25rem;">
+                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">Buy at 50 cents, win</h5>
+                    <p style="font-size:0.85rem;color:var(--text-secondary);">Profit = 50 cents. Fee = 5 cents.</p>
+                    <p style="font-size:0.9rem;margin-top:0.25rem;">Effective rate: <strong style="color:var(--yellow);">10%</strong></p>
+                </div>
+                <div style="background:var(--bg);border-radius:10px;padding:1.25rem;">
+                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">Buy at 10 cents, win</h5>
+                    <p style="font-size:0.85rem;color:var(--text-secondary);">Profit = 90 cents. Fee = 9 cents.</p>
+                    <p style="font-size:0.9rem;margin-top:0.25rem;">Effective rate: <strong style="color:var(--red);">90% of investment</strong></p>
+                </div>
+                <div style="background:var(--bg);border-radius:10px;padding:1.25rem;">
+                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">Buy at 5 cents, win</h5>
+                    <p style="font-size:0.85rem;color:var(--text-secondary);">Profit = 95 cents. Fee = 9.5 cents.</p>
+                    <p style="font-size:0.9rem;margin-top:0.25rem;">Effective rate: <strong style="color:var(--red);">190% of investment!</strong></p>
+                </div>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:1.25rem;">
+                With our model, a 5-cent contract has a commission of just <strong style="color:var(--accent);">$0.29</strong> (5.7%). Everyone can trade at any price.
+            </p>
+        </div>
+
+        <!-- Final Recommendation -->
+        <div style="margin-top:2rem;padding:2rem;background:linear-gradient(135deg,rgba(108,92,231,0.08),rgba(0,206,201,0.08));border:1px solid var(--primary);border-radius:16px;">
+            <h3 style="margin-bottom:1rem;">Why this model wins</h3>
+            <div class="reasons-grid">
+                <div>
+                    <h5 style="color:var(--green);margin-bottom:0.5rem;">For users</h5>
+                    <ul>
+                        <li><strong>Free to enter</strong> &mdash; try the platform with zero upfront cost</li>
+                        <li><strong>Know your fee upfront</strong> &mdash; displayed before you confirm</li>
+                        <li><strong>If you lose, you pay nothing</strong> &mdash; commission is capped at your payout</li>
+                        <li><strong>Patient traders pay less</strong> &mdash; post an order and wait, get 67% off</li>
+                        <li><strong>Fee can never trap you</strong> &mdash; always costs less than your position</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="color:var(--accent);margin-bottom:0.5rem;">For the business</h5>
+                    <ul>
+                        <li><strong>~2% revenue</strong> on trade volume &mdash; sustainable without VC subsidies</li>
+                        <li><strong>Proven model</strong> &mdash; same approach as Kalshi ($263M revenue in 2025)</li>
+                        <li><strong>Free entry drives adoption</strong> &mdash; removes the biggest friction point</li>
+                        <li><strong>Accurate prices</strong> &mdash; smart fees don't distort the market</li>
+                        <li><strong>Simple to explain</strong> &mdash; "commission only at exit, losers pay nothing"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+    <div class="container">
+        <div class="section-label">FAQ</div>
+        <div class="section-title">Common questions</div>
+        <div class="faq-list" style="margin-top:2rem;">
+            <div class="faq-item">
+                <div class="faq-q">How much commission will I pay?</div>
+                <div class="faq-a"><p>It depends on the contract price. At 50/50 odds, the initiating trader pays about 3% and the waiting trader pays about 1%. At extreme prices (near 0 or near $1), both pay close to 0%. The commission is always shown before you confirm the trade.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">When is the commission charged?</div>
+                <div class="faq-a"><p>Only when you exit. Entering a trade is always free. You pay commission when you sell your position or when the event resolves. If you lose and your payout is $0, you pay $0 in commission.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Why do two people in the same trade pay different amounts?</div>
+                <div class="faq-a"><p>Two reasons. First, the person who initiates ("I want to trade now") pays more than the person whose order was waiting. Second, the Yes buyer and No buyer pay the same dollar amount but different percentages, because one side costs more to enter than the other.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Can the commission ever be more than my payout?</div>
+                <div class="faq-a"><p>No. This is mathematically impossible with our model. As your position drops in value, the commission drops even faster. The maximum commission on any single trade is about 5.7% of what you invested (on extreme longshots). At typical prices, it's 1-3%.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">How do I pay less commission?</div>
+                <div class="faq-a"><p>Post a limit order instead of buying at the current price. If your order sits on the book and someone else matches it, you're the "patient" trader and you pay 1/3 the commission. This also helps the market by adding depth to the order book.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Is this the same model as Kalshi?</div>
+                <div class="faq-a"><p>Same core approach (commission scales with market uncertainty, different rates for initiating vs. waiting traders). Our version charges at exit only (Kalshi charges at trade time) and our commission rates are tuned for a ~2% platform target.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Why not just charge a flat percentage?</div>
+                <div class="faq-a"><p>A flat percentage breaks at extreme prices. If a contract drops to 2 cents, a 1% fee on the $1 contract value can be worth more than the position itself &mdash; the user literally can't afford to exit. Our model avoids this by automatically shrinking the commission as prices approach 0 or $1.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 YourPlatform &mdash; Commission Model v3 &mdash; Smart Pricing &middot; Free Entry &middot; Exit-Only Commission</p>
+</footer>
+
+<script>
+const KT = 0.06;   // initiator rate
+const KM = 0.02;   // waiting trader rate
+
+let takerSide = 'yes';
+
+function setTaker(side) {
+    takerSide = side;
+    document.getElementById('btnYesTaker').classList.toggle('active-toggle', side === 'yes');
+    document.getElementById('btnNoTaker').classList.toggle('active-toggle', side === 'no');
+    update();
+}
+
+function calcFee(k, p) {
+    return Math.max(k * p * (1 - p), 0.001);
+}
+
+function update() {
+    const pYes = parseInt(document.getElementById('sPrice').value) / 100;
+    const pNo = 1 - pYes;
+    const qty = parseInt(document.getElementById('sQty').value);
+
+    document.getElementById('dPrice').textContent = '$' + pYes.toFixed(2);
+    document.getElementById('dQty').textContent = qty;
+
+    const yK = takerSide === 'yes' ? KT : KM;
+    const nK = takerSide === 'no'  ? KT : KM;
+
+    const yFee = calcFee(yK, pYes);
+    const nFee = calcFee(nK, pYes);
+
+    const yTotalFee = Math.round(yFee * qty * 100) / 100;
+    const nTotalFee = Math.round(nFee * qty * 100) / 100;
+    const yCost = Math.round(pYes * qty * 100) / 100;
+    const nCost = Math.round(pNo * qty * 100) / 100;
+    const yPaid = yCost + yTotalFee;
+    const nPaid = nCost + nTotalFee;
+    const platformTotal = yTotalFee + nTotalFee;
+    const pot = qty;
+
+    // Yes panel
+    document.getElementById('yesRole').className = 'role-tag ' + (takerSide === 'yes' ? 'high' : 'low');
+    document.getElementById('yesRole').textContent = takerSide === 'yes' ? 'INITIATES' : 'WAITS';
+    document.getElementById('yBuysAt').textContent = '$' + pYes.toFixed(2);
+    document.getElementById('yCost').textContent = '$' + yCost.toFixed(2);
+    document.getElementById('yFeeTot').textContent = '$' + yTotalFee.toFixed(2);
+    document.getElementById('yRate').textContent = (yCost > 0 ? (yTotalFee / yCost * 100) : 0).toFixed(2) + '%';
+    document.getElementById('yTotal').textContent = '$' + yPaid.toFixed(2);
+    document.getElementById('yWin').textContent = '+$' + (pot - yPaid).toFixed(2);
+    document.getElementById('yLose').textContent = '-$' + yPaid.toFixed(2);
+
+    // No panel
+    document.getElementById('noRole').className = 'role-tag ' + (takerSide === 'no' ? 'high' : 'low');
+    document.getElementById('noRole').textContent = takerSide === 'no' ? 'INITIATES' : 'WAITS';
+    document.getElementById('nBuysAt').textContent = '$' + pNo.toFixed(2);
+    document.getElementById('nCost').textContent = '$' + nCost.toFixed(2);
+    document.getElementById('nFeeTot').textContent = '$' + nTotalFee.toFixed(2);
+    document.getElementById('nRate').textContent = (nCost > 0 ? (nTotalFee / nCost * 100) : 0).toFixed(2) + '%';
+    document.getElementById('nTotal').textContent = '$' + nPaid.toFixed(2);
+    document.getElementById('nWin').textContent = '+$' + (pot - nPaid).toFixed(2);
+    document.getElementById('nLose').textContent = '-$' + nPaid.toFixed(2);
+
+    // VS
+    document.getElementById('vsPlatform').textContent = '$' + platformTotal.toFixed(2);
+    document.getElementById('vsPct').textContent = (platformTotal / pot * 100).toFixed(2) + '% of total';
+    document.getElementById('vsYRate').textContent = (yCost > 0 ? (yTotalFee / yCost * 100) : 0).toFixed(2) + '%';
+    document.getElementById('vsNRate').textContent = (nCost > 0 ? (nTotalFee / nCost * 100) : 0).toFixed(2) + '%';
+}
+
+document.getElementById('sPrice').addEventListener('input', update);
+document.getElementById('sQty').addEventListener('input', update);
+update();
+
+// ========================
+// FEE CURVE CHART (bell curve)
+// ========================
+
+function drawFeeCurve() {
+    const canvas = document.getElementById('feeCurveChart');
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width, H = rect.height;
+    const pad = { top: 25, right: 30, bottom: 55, left: 75 };
+    const gW = W - pad.left - pad.right;
+    const gH = H - pad.top - pad.bottom;
+
+    const maxFee = (KT + KM) * 0.25 * 1.15; // combined peak + margin
+
+    // Clear
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(45,43,85,0.5)'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.top + (gH / 5) * i;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
+    }
+    for (let i = 0; i <= 10; i++) {
+        const x = pad.left + (gW / 10) * i;
+        ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top + gH); ctx.stroke();
+    }
+
+    // X labels
+    ctx.fillStyle = '#A7A9BE'; ctx.font = '12px system-ui'; ctx.textAlign = 'center';
+    for (let i = 0; i <= 10; i++) {
+        ctx.fillText('$' + (i / 10).toFixed(1), pad.left + (gW / 10) * i, H - pad.bottom + 22);
+    }
+    ctx.fillText('Contract Price', pad.left + gW / 2, H - 8);
+
+    // Y labels
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+        const fee = maxFee * (5 - i) / 5;
+        ctx.fillText('$' + fee.toFixed(4), pad.left - 8, pad.top + (gH / 5) * i + 4);
+    }
+
+    // Y title
+    ctx.save(); ctx.translate(14, pad.top + gH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.font = 'bold 11px system-ui'; ctx.fillStyle = '#A7A9BE';
+    ctx.fillText('Commission per Contract', 0, 0); ctx.restore();
+
+    function drawCurve(k, color, lineWidth, dash) {
+        ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = lineWidth;
+        ctx.setLineDash(dash || []);
+        for (let px = 0; px <= gW; px++) {
+            const p = 0.01 + (px / gW) * 0.98;
+            const fee = k * p * (1 - p);
+            const x = pad.left + px;
+            const y = pad.top + gH - (fee / maxFee) * gH;
+            px === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // Combined fill
+    ctx.beginPath();
+    for (let px = 0; px <= gW; px++) {
+        const p = 0.01 + (px / gW) * 0.98;
+        const fee = (KT + KM) * p * (1 - p);
+        const x = pad.left + px;
+        const y = pad.top + gH - (fee / maxFee) * gH;
+        px === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.lineTo(pad.left + gW, pad.top + gH);
+    ctx.lineTo(pad.left, pad.top + gH);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
+    grad.addColorStop(0, 'rgba(162,155,254,0.15)');
+    grad.addColorStop(1, 'rgba(162,155,254,0.0)');
+    ctx.fillStyle = grad; ctx.fill();
+
+    // Draw curves
+    drawCurve(KT + KM, 'rgba(162,155,254,0.6)', 2, [6, 4]);
+    drawCurve(KT, '#E17055', 2.5, []);
+    drawCurve(KM, '#00B894', 2.5, []);
+
+    // Peak annotations
+    const midX = pad.left + gW * (0.50 - 0.01) / 0.98;
+    const takerPeakY = pad.top + gH - ((KT * 0.25) / maxFee) * gH;
+    const makerPeakY = pad.top + gH - ((KM * 0.25) / maxFee) * gH;
+    const combinedPeakY = pad.top + gH - (((KT + KM) * 0.25) / maxFee) * gH;
+
+    ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'left';
+
+    // Annotation backgrounds
+    function drawLabel(text, x, y, color) {
+        ctx.fillStyle = color;
+        const m = ctx.measureText(text);
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = 'rgba(15,14,23,0.8)';
+        ctx.fillRect(x - 2, y - 12, m.width + 4, 16);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = color;
+        ctx.fillText(text, x, y);
+    }
+
+    drawLabel('Initiator: $' + (KT * 0.25).toFixed(4) + '/contract', midX + 12, takerPeakY - 2, '#E17055');
+    drawLabel('Patient: $' + (KM * 0.25).toFixed(4) + '/contract', midX + 12, makerPeakY + 14, '#00B894');
+    drawLabel('Combined: $' + ((KT + KM) * 0.25).toFixed(4), midX + 12, combinedPeakY - 16, '#A29BFE');
+
+    // Peak dots
+    [[midX, takerPeakY, '#E17055'], [midX, makerPeakY, '#00B894'], [midX, combinedPeakY, '#A29BFE']].forEach(([x, y, c]) => {
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = c; ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+    });
+}
+
+// ========================
+// EFFECTIVE RATE CHART (% chart)
+// ========================
+
+function drawRateChart() {
+    const canvas = document.getElementById('rateChart');
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width, H = rect.height;
+    const pad = { top: 25, right: 30, bottom: 55, left: 65 };
+    const gW = W - pad.left - pad.right;
+    const gH = H - pad.top - pad.bottom;
+
+    const maxRate = 25; // 25%
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(45,43,85,0.5)'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = pad.top + (gH / 5) * i;
+        ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + gW, y); ctx.stroke();
+    }
+    for (let i = 0; i <= 10; i++) {
+        const x = pad.left + (gW / 10) * i;
+        ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, pad.top + gH); ctx.stroke();
+    }
+
+    // X labels
+    ctx.fillStyle = '#A7A9BE'; ctx.font = '12px system-ui'; ctx.textAlign = 'center';
+    for (let i = 0; i <= 10; i++) {
+        ctx.fillText('$' + (i / 10).toFixed(1), pad.left + (gW / 10) * i, H - pad.bottom + 22);
+    }
+    ctx.fillText('Contract Price', pad.left + gW / 2, H - 8);
+
+    // Y labels
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+        const rate = maxRate * (5 - i) / 5;
+        ctx.fillText(rate.toFixed(0) + '%', pad.left - 8, pad.top + (gH / 5) * i + 4);
+    }
+
+    // Y title
+    ctx.save(); ctx.translate(14, pad.top + gH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.font = 'bold 11px system-ui'; ctx.fillStyle = '#A7A9BE';
+    ctx.fillText('Effective Commission Rate', 0, 0); ctx.restore();
+
+    // Draw rate curves
+    function drawRateCurve(k, color, lineWidth, dash) {
+        ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = lineWidth;
+        ctx.setLineDash(dash || []);
+        let started = false;
+        for (let px = 0; px <= gW; px++) {
+            const p = 0.01 + (px / gW) * 0.98;
+            const fee = k * p * (1 - p);
+            const rate = (fee / p) * 100; // fee as % of buy price
+            const clampedRate = Math.min(rate, maxRate);
+            const x = pad.left + px;
+            const y = pad.top + gH - (clampedRate / maxRate) * gH;
+            if (!started) { ctx.moveTo(x, y); started = true; } else { ctx.lineTo(x, y); }
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    // 10% on winnings comparison (effective rate = 0.10 * (1-p) / p * 100)
+    ctx.beginPath(); ctx.strokeStyle = 'rgba(253,203,110,0.5)'; ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    let started = false;
+    for (let px = 0; px <= gW; px++) {
+        const p = 0.01 + (px / gW) * 0.98;
+        const winRate = (0.10 * (1 - p) / p) * 100;
+        const clampedRate = Math.min(winRate, maxRate);
+        const x = pad.left + px;
+        const y = pad.top + gH - (clampedRate / maxRate) * gH;
+        if (!started) { ctx.moveTo(x, y); started = true; } else { ctx.lineTo(x, y); }
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // Fill danger zone for 10% model
+    ctx.beginPath();
+    ctx.globalAlpha = 0.08;
+    started = false;
+    for (let px = 0; px <= gW; px++) {
+        const p = 0.01 + (px / gW) * 0.98;
+        const winRate = (0.10 * (1 - p) / p) * 100;
+        const clampedRate = Math.min(winRate, maxRate);
+        const x = pad.left + px;
+        const y = pad.top + gH - (clampedRate / maxRate) * gH;
+        if (!started) { ctx.moveTo(x, y); started = true; } else { ctx.lineTo(x, y); }
+    }
+    ctx.lineTo(pad.left + gW, pad.top + gH);
+    ctx.lineTo(pad.left, pad.top + gH);
+    ctx.closePath();
+    ctx.fillStyle = '#FDCB6E'; ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Our model curves
+    drawRateCurve(KT, '#E17055', 2.5, []);
+    drawRateCurve(KM, '#00B894', 2.5, []);
+
+    // Annotations
+    ctx.font = 'bold 10px system-ui';
+
+    // 10% label at p=0.10
+    const p10 = 0.10;
+    const win10Rate = Math.min((0.10 * (1 - p10) / p10) * 100, maxRate);
+    const x10 = pad.left + ((p10 - 0.01) / 0.98) * gW;
+    const y10 = pad.top + gH - (win10Rate / maxRate) * gH;
+    ctx.fillStyle = 'rgba(15,14,23,0.8)';
+    ctx.fillRect(x10 + 8, y10 - 14, 120, 16);
+    ctx.fillStyle = '#FDCB6E';
+    ctx.textAlign = 'left';
+    ctx.fillText('10% model: 90% here!', x10 + 10, y10 - 2);
+
+    // Our model label at p=0.10
+    const ourRate10 = (KT * (1 - p10)) * 100;
+    const yOur10 = pad.top + gH - (ourRate10 / maxRate) * gH;
+    ctx.fillStyle = 'rgba(15,14,23,0.8)';
+    ctx.fillRect(x10 + 8, yOur10 - 2, 95, 16);
+    ctx.fillStyle = '#E17055';
+    ctx.fillText('Ours: ' + ourRate10.toFixed(1) + '% here', x10 + 10, yOur10 + 10);
+
+    // Safe zone annotation
+    ctx.fillStyle = 'rgba(0,184,148,0.15)';
+    const safeMaxY = pad.top + gH - (6 / maxRate) * gH;
+    ctx.fillRect(pad.left, safeMaxY, gW, pad.top + gH - safeMaxY);
+    ctx.fillStyle = 'rgba(0,184,148,0.4)';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText('Our model stays under 6% everywhere', pad.left + gW - 5, safeMaxY + 14);
+}
+
+// ========================
+// FEE SCHEDULE TABLE
+// ========================
+
+function buildFeeSchedule() {
+    const prices = [0.02, 0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.98];
+    const tbody = document.getElementById('feeScheduleBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    prices.forEach(p => {
+        const tf = KT * p * (1 - p);
+        const mf = KM * p * (1 - p);
+        const total = tf + mf;
+        const tRate = (tf / p * 100).toFixed(2);
+        const mRate = (mf / (1 - p) * 100).toFixed(2);
+        const tr = document.createElement('tr');
+        const isMiddle = p === 0.50;
+        const style = isMiddle ? 'background:rgba(108,92,231,0.06);' : '';
+        tr.style.cssText = style;
+        tr.innerHTML = `
+            <td style="color:var(--text);font-weight:600;">$${p.toFixed(2)}${isMiddle ? ' <span style="font-size:0.65rem;color:var(--primary-light);">PEAK</span>' : ''}</td>
+            <td style="color:var(--high);">$${tf.toFixed(4)}</td>
+            <td style="color:var(--low);">$${mf.toFixed(4)}</td>
+            <td>$${total.toFixed(4)}</td>
+            <td>${tRate}%</td>
+            <td>${mRate}%</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Initialize charts
+function initCharts() {
+    drawFeeCurve();
+    drawRateChart();
+    buildFeeSchedule();
+}
+
+window.addEventListener('load', initCharts);
+window.addEventListener('resize', () => { drawFeeCurve(); drawRateChart(); });
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
+});
+</script>
+
+</body>
+</html>
