@@ -447,6 +447,79 @@
             color: var(--text-secondary);
         }
         .fee-schedule-mini tr:hover td { background: rgba(108,92,231,0.03); }
+
+        /* VERSION COMPARISON */
+        .ver-cards {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;
+        }
+        @media (max-width: 768px) { .ver-cards { grid-template-columns: 1fr; } }
+        .ver-card {
+            background: var(--bg-card); border: 2px solid var(--border);
+            border-radius: 16px; padding: 2rem; position: relative;
+        }
+        .ver-card.v1 { border-color: var(--high); }
+        .ver-card.v2 { border-color: var(--accent); }
+        .ver-badge {
+            position: absolute; top: -1px; right: -1px;
+            padding: 0.3rem 1rem; border-radius: 0 14px 0 10px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+        }
+        .ver-badge.v1 { background: var(--high); color: white; }
+        .ver-badge.v2 { background: var(--accent); color: var(--bg); }
+        .ver-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+        .ver-card .ver-rule {
+            background: var(--bg); border-radius: 10px; padding: 1rem;
+            font-size: 0.85rem; margin: 1rem 0; line-height: 1.7;
+        }
+        .ver-card ul { font-size: 0.85rem; color: var(--text-secondary); padding-left: 1.25rem; }
+        .ver-card li { margin-bottom: 0.35rem; }
+
+        .scenario-builder {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 2rem;
+        }
+        .scenario-builder h3 { font-size: 1.15rem; margin-bottom: 1.5rem; }
+        .sc-results {
+            display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; margin-top: 1.5rem;
+            background: var(--bg); border-radius: 12px; overflow: hidden;
+        }
+        @media (max-width: 768px) { .sc-results { grid-template-columns: 1fr; } }
+        .sc-panel { padding: 1.5rem; }
+        .sc-panel h4 {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; margin-bottom: 1rem;
+        }
+        .sc-row {
+            display: flex; justify-content: space-between; padding: 0.35rem 0; font-size: 0.85rem;
+        }
+        .sc-row .label { color: var(--text-secondary); }
+        .sc-row .val { font-weight: 600; }
+        .sc-divider {
+            width: 1px; background: var(--border);
+        }
+        @media (max-width: 768px) {
+            .sc-divider { width: auto; height: 1px; }
+        }
+
+        .impact-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;
+        }
+        @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+        .impact-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.75rem; position: relative; overflow: hidden;
+        }
+        .impact-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .impact-card.normal::before { background: var(--green); }
+        .impact-card.worst::before { background: var(--red); }
+        .impact-card h4 { font-size: 0.95rem; margin-bottom: 1rem; }
+        .impact-row {
+            display: flex; justify-content: space-between; padding: 0.35rem 0; font-size: 0.85rem;
+        }
+        .impact-row .label { color: var(--text-secondary); }
+        .impact-row .val { font-weight: 600; }
     </style>
 </head>
 <body>
@@ -460,6 +533,7 @@
             <a href="#calculator">Calculator</a>
             <a href="#example">Example</a>
             <a href="#compare">Compare</a>
+            <a href="#versions">V1 vs V2</a>
             <a href="#faq">FAQ</a>
         </div>
     </div>
@@ -1250,6 +1324,403 @@
     </div>
 </section>
 
+<!-- V1 vs V2 COMPARISON -->
+<section id="versions">
+    <div class="container">
+        <div class="section-label">Fee Reference Price</div>
+        <div class="section-title">Two approaches — which one should we use?</div>
+        <div class="section-desc">The fee formula is the same. The only question: when a user sells before settlement, which price does the bell curve use?</div>
+
+        <!-- Two version cards -->
+        <div class="ver-cards">
+            <div class="ver-card v1">
+                <div class="ver-badge v1">VERSION 1</div>
+                <h3>Sell Price Model</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Bell curve uses the <strong>current market price</strong> at the time of exit.</p>
+                <div class="ver-rule">
+                    <strong>Sell exit:</strong> fee based on <span style="color:var(--high);">sell price</span><br>
+                    <strong>Settlement:</strong> fee based on <span style="color:var(--primary-light);">entry price</span>
+                </div>
+                <ul>
+                    <li>Fee always proportional to what the user receives right now</li>
+                    <li>User is <strong>never trapped</strong> — fee shrinks as position value shrinks</li>
+                    <li class="bad">Opens the door to <strong>churn-to-reset exploit</strong> by bots</li>
+                    <li class="bad">Systematically lower revenue when prices move toward extremes</li>
+                </ul>
+            </div>
+            <div class="ver-card v2">
+                <div class="ver-badge v2">VERSION 2</div>
+                <h3>Entry Price Model</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Bell curve <strong>always</strong> uses the price the user originally paid.</p>
+                <div class="ver-rule">
+                    <strong>Sell exit:</strong> fee based on <span style="color:var(--accent);">entry price</span>, capped at proceeds<br>
+                    <strong>Settlement:</strong> fee based on <span style="color:var(--accent);">entry price</span>, capped at payout
+                </div>
+                <ul>
+                    <li>Fee is locked in at entry — user knows their fee from day one</li>
+                    <li>Churn exploit is <strong>dead</strong> — selling and re-buying costs more</li>
+                    <li>Higher platform revenue in most scenarios</li>
+                    <li class="good"><strong>Cap at proceeds</strong> prevents trapping — see solution below</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive scenario comparison -->
+        <div class="scenario-builder">
+            <h3>Side-by-Side Scenario Builder</h3>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">Set up a trade and see how the fee differs under each model.</p>
+            <div class="slider-row">
+                <label>Entry Price <span class="val" id="scEntry">$0.50</span></label>
+                <input type="range" id="sScEntry" min="5" max="95" value="50">
+            </div>
+            <div class="slider-row">
+                <label>Sell Price <span class="val" id="scSell">$0.85</span></label>
+                <input type="range" id="sScSell" min="1" max="99" value="85">
+            </div>
+            <div class="slider-row">
+                <label>Contracts <span class="val" id="scQty">1000</span></label>
+                <input type="range" id="sScQty" min="100" max="5000" value="1000" step="100">
+            </div>
+
+            <div class="sc-results">
+                <!-- V1 -->
+                <div class="sc-panel">
+                    <h4 style="color:var(--high);">V1 — Sell Price Model</h4>
+                    <div class="sc-row"><span class="label">Bell curve uses</span><span class="val" id="scV1Ref">$0.85</span></div>
+                    <div class="sc-row"><span class="label">p &times; (1&minus;p)</span><span class="val" id="scV1Bell">0.1275</span></div>
+                    <div class="sc-row"><span class="label">Fee per contract</span><span class="val" style="color:var(--high);" id="scV1FeePC">$0.00765</span></div>
+                    <div class="sc-row" style="border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.5rem;">
+                        <span class="label">Total fee</span><span class="val" style="font-size:1.1rem;color:var(--high);" id="scV1Fee">$7.65</span>
+                    </div>
+                    <div class="sc-row"><span class="label">User receives</span><span class="val" id="scV1Net">$842.35</span></div>
+                </div>
+                <div class="sc-divider"></div>
+                <!-- V2 -->
+                <div class="sc-panel">
+                    <h4 style="color:var(--accent);">V2 — Entry Price Model</h4>
+                    <div class="sc-row"><span class="label">Bell curve uses</span><span class="val" id="scV2Ref">$0.50</span></div>
+                    <div class="sc-row"><span class="label">p &times; (1&minus;p)</span><span class="val" id="scV2Bell">0.2500</span></div>
+                    <div class="sc-row"><span class="label">Fee per contract</span><span class="val" style="color:var(--accent);" id="scV2FeePC">$0.01500</span></div>
+                    <div class="sc-row" style="border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.5rem;">
+                        <span class="label">Total fee</span><span class="val" style="font-size:1.1rem;color:var(--accent);" id="scV2Fee">$15.00</span>
+                    </div>
+                    <div class="sc-row"><span class="label">User receives</span><span class="val" id="scV2Net">$835.00</span></div>
+                    <div class="sc-row"><span class="label">Cap applied?</span><span class="val" id="scV2Cap" style="color:var(--green);">No</span></div>
+                </div>
+            </div>
+            <div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+                <div>
+                    <span style="font-size:0.85rem;color:var(--text-secondary);">Revenue difference:</span>
+                    <span style="font-size:1.1rem;font-weight:800;margin-left:0.5rem;" id="scDiff">+$7.35</span>
+                    <span style="font-size:0.85rem;color:var(--text-secondary);margin-left:0.25rem;" id="scDiffPct">(+96% more with V2)</span>
+                </div>
+                <div id="scVerdict" style="font-size:0.85rem;font-weight:600;color:var(--accent);"></div>
+            </div>
+        </div>
+
+        <!-- Revenue impact: Normal vs Worst case -->
+        <h3 style="font-size:1.25rem;margin-bottom:1.5rem;">Revenue Impact — Normal vs Bot Exploitation</h3>
+
+        <div class="scenario-builder" style="margin-bottom:2rem;">
+            <h3>Adjust Your Assumptions</h3>
+            <div class="slider-row">
+                <label>Monthly Volume <span class="val" id="riVol">$10,000,000</span></label>
+                <input type="range" id="sRiVol" min="100000" max="100000000" value="10000000" step="100000">
+            </div>
+            <div class="slider-row">
+                <label>% Volume Churned by Bots <span class="val" id="riBotPct">10%</span></label>
+                <input type="range" id="sRiBot" min="0" max="50" value="10">
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.5rem;">Bot churn: bots sell and re-buy to reset entry price. Only exploitable under V1 (sell price model). V2 is immune.</p>
+        </div>
+
+        <div class="impact-grid">
+            <div class="impact-card normal">
+                <h4>Normal Conditions (no bots)</h4>
+                <div class="impact-row"><span class="label">Monthly volume</span><span class="val" id="riNormVol">$10M</span></div>
+                <div class="impact-row"><span class="label">V1 revenue (~1.80%)</span><span class="val" style="color:var(--high);" id="riNormV1">$180,000</span></div>
+                <div class="impact-row"><span class="label">V2 revenue (~1.88%)</span><span class="val" style="color:var(--accent);" id="riNormV2">$188,000</span></div>
+                <div class="impact-row" style="border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.5rem;">
+                    <span class="label">V2 earns more by</span><span class="val" style="color:var(--green);" id="riNormDiff">+$8,000/mo</span>
+                </div>
+                <div class="impact-row"><span class="label">Annual difference</span><span class="val" style="color:var(--green);" id="riNormAnnual">+$96,000/yr</span></div>
+            </div>
+            <div class="impact-card worst">
+                <h4>With Bot Exploitation</h4>
+                <div class="impact-row"><span class="label">Churned volume</span><span class="val" id="riWorstChurn">$1M (10%)</span></div>
+                <div class="impact-row"><span class="label">V1 revenue (bots pay ~0.57%)</span><span class="val" style="color:var(--high);" id="riWorstV1">$167,700</span></div>
+                <div class="impact-row"><span class="label">V2 revenue (bots can't churn)</span><span class="val" style="color:var(--accent);" id="riWorstV2">$188,000</span></div>
+                <div class="impact-row" style="border-top:1px solid var(--border);margin-top:0.5rem;padding-top:0.5rem;">
+                    <span class="label">V2 earns more by</span><span class="val" style="color:var(--green);" id="riWorstDiff">+$20,300/mo</span>
+                </div>
+                <div class="impact-row"><span class="label">Annual difference</span><span class="val" style="color:var(--green);" id="riWorstAnnual">+$243,600/yr</span></div>
+                <div class="impact-row"><span class="label">Revenue lost to bots (V1)</span><span class="val" style="color:var(--red);" id="riWorstLost">$12,300/mo</span></div>
+            </div>
+        </div>
+
+        <!-- 4-user simulation comparison -->
+        <div class="sim-card" style="border-color:var(--primary);">
+            <h3><span class="badge">4-USER SIM</span> Same scenario, both models</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.25rem;">Using our 4-user example (A, B, C, D). Only the sell exit fees differ — settlement fees are identical.</p>
+            <div style="overflow-x:auto;">
+                <table class="sim-table" style="font-size:0.8rem;">
+                    <thead>
+                        <tr>
+                            <th>Exit</th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Entry</th>
+                            <th>Sell</th>
+                            <th>Qty</th>
+                            <th style="background:rgba(225,112,85,0.12);">V1 Fee (sell price)</th>
+                            <th style="background:rgba(0,206,201,0.12);">V2 Fee (entry price)</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>E1</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Sell</td>
+                            <td>$0.40</td>
+                            <td>$0.25</td>
+                            <td>120</td>
+                            <td style="color:var(--high);">$0.90</td>
+                            <td style="color:var(--accent);">$1.15</td>
+                            <td class="good">+$0.25</td>
+                        </tr>
+                        <tr>
+                            <td>E2</td>
+                            <td style="color:var(--yellow);">C</td>
+                            <td>Sell</td>
+                            <td>$0.25</td>
+                            <td>$0.55</td>
+                            <td>60</td>
+                            <td style="color:var(--high);">$0.59</td>
+                            <td style="color:var(--accent);">$0.45</td>
+                            <td class="bad">&minus;$0.14</td>
+                        </tr>
+                        <tr>
+                            <td>E3</td>
+                            <td style="color:var(--accent);">A</td>
+                            <td>Sell</td>
+                            <td>$0.40</td>
+                            <td>$0.70</td>
+                            <td>40</td>
+                            <td style="color:var(--high);">$0.34</td>
+                            <td style="color:var(--accent);">$0.38</td>
+                            <td class="good">+$0.05</td>
+                        </tr>
+                        <tr style="color:var(--text-secondary);font-style:italic;">
+                            <td>E4–E8</td>
+                            <td>All</td>
+                            <td>Settlement</td>
+                            <td colspan="3" style="text-align:center;">Identical — both use entry price</td>
+                            <td>$1.76</td>
+                            <td>$1.76</td>
+                            <td>$0.00</td>
+                        </tr>
+                        <tr style="background:rgba(108,92,231,0.06);font-weight:700;">
+                            <td colspan="6">Total Platform Revenue</td>
+                            <td style="color:var(--high);font-size:1rem;">$3.59</td>
+                            <td style="color:var(--accent);font-size:1rem;">$3.75</td>
+                            <td style="color:var(--green);">+$0.16 (+4.3%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:1rem;">
+                V2 collects <strong>more</strong> on E1 and E3 (price moved toward extremes), <strong>less</strong> on E2 (price moved toward midpoint). Net: V2 wins by $0.16.
+            </p>
+        </div>
+
+        <!-- Churn exploit demonstration -->
+        <div class="sim-card" style="border-color:var(--red);">
+            <h3><span class="badge" style="background:rgba(225,112,85,0.2);color:var(--high);">BOT EXPLOIT</span> Churn-to-reset attack — V1 only</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.25rem;">A bot enters at $0.50, price moves to $0.95. It sells and re-buys to reset entry price, dramatically cutting the settlement fee.</p>
+            <div style="overflow-x:auto;">
+                <table class="sim-table" style="font-size:0.8rem;">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Step</th>
+                            <th style="background:rgba(225,112,85,0.12);">V1 Fee</th>
+                            <th style="background:rgba(0,206,201,0.12);">V2 Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" style="vertical-align:middle;font-weight:700;">Honest trader<br><span style="font-weight:400;font-size:0.75rem;color:var(--text-secondary);">Holds to settlement</span></td>
+                            <td>Settlement (1000 contracts, entry $0.50)</td>
+                            <td style="color:var(--high);">$15.00</td>
+                            <td style="color:var(--accent);">$15.00</td>
+                        </tr>
+                        <tr style="background:rgba(108,92,231,0.04);">
+                            <td><strong>Total fees paid</strong></td>
+                            <td style="color:var(--high);font-weight:700;">$15.00</td>
+                            <td style="color:var(--accent);font-weight:700;">$15.00</td>
+                        </tr>
+                        <tr style="border-top:2px solid var(--border);">
+                            <td rowspan="4" style="vertical-align:middle;font-weight:700;color:var(--red);">Bot (churns)<br><span style="font-weight:400;font-size:0.75rem;color:var(--text-secondary);">Sells at $0.95, re-buys at $0.95</span></td>
+                            <td>Sell at $0.95 (entry was $0.50)</td>
+                            <td>0.06 &times; 1000 &times; <strong style="color:var(--high);">0.95</strong> &times; 0.05 = $2.85</td>
+                            <td>0.06 &times; 1000 &times; <strong style="color:var(--accent);">0.50</strong> &times; 0.50 = $15.00</td>
+                        </tr>
+                        <tr>
+                            <td>Re-buy at $0.95 (free entry)</td>
+                            <td>$0.00</td>
+                            <td>$0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Settlement (entry now $0.95)</td>
+                            <td>0.06 &times; 1000 &times; 0.95 &times; 0.05 = $2.85</td>
+                            <td>0.06 &times; 1000 &times; 0.95 &times; 0.05 = $2.85</td>
+                        </tr>
+                        <tr style="background:rgba(225,112,85,0.06);">
+                            <td><strong>Total fees paid</strong></td>
+                            <td style="color:var(--red);font-weight:700;font-size:1rem;">$5.70</td>
+                            <td style="color:var(--accent);font-weight:700;font-size:1rem;">$17.85</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div style="background:rgba(225,112,85,0.08);border:1px solid rgba(225,112,85,0.2);border-radius:10px;padding:1rem;text-align:center;">
+                    <div style="font-size:0.7rem;color:var(--high);text-transform:uppercase;letter-spacing:0.05em;">V1: Bot saves</div>
+                    <div style="font-size:1.4rem;font-weight:800;color:var(--red);">62%</div>
+                    <div style="font-size:0.8rem;color:var(--text-secondary);">$15.00 &rarr; $5.70 per 1000 contracts</div>
+                </div>
+                <div style="background:rgba(0,206,201,0.08);border:1px solid rgba(0,206,201,0.2);border-radius:10px;padding:1rem;text-align:center;">
+                    <div style="font-size:0.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.05em;">V2: Bot pays MORE</div>
+                    <div style="font-size:1.4rem;font-weight:800;color:var(--green);">+19%</div>
+                    <div style="font-size:0.8rem;color:var(--text-secondary);">$15.00 &rarr; $17.85 — churning backfires</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solving the trap problem -->
+        <div class="sim-card" style="border-color:var(--accent);margin-top:2rem;">
+            <h3><span class="badge" style="background:rgba(0,206,201,0.15);color:var(--accent);">SOLUTION</span> How V2 prevents trapping users</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.25rem;">
+                The one risk with entry price: if the price crashes far below entry, the fee (based on entry) could exceed the sell proceeds. The fix is simple — <strong>cap the fee at the proceeds</strong>.
+            </p>
+
+            <div style="background:var(--bg);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                <h5 style="font-size:0.9rem;margin-bottom:1rem;">Example: User entered at $0.50, price crashed to $0.01</h5>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;">
+                    <div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Calculated fee</div>
+                        <div style="font-size:1.1rem;font-weight:700;">$0.015/contract</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">0.06 &times; 0.50 &times; 0.50</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Sell proceeds</div>
+                        <div style="font-size:1.1rem;font-weight:700;">$0.01/contract</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">Position is nearly worthless</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.7rem;color:var(--accent);text-transform:uppercase;">Actual fee (capped)</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:var(--accent);">$0.01/contract</div>
+                        <div style="font-size:0.75rem;color:var(--green);">min(calculated, proceeds)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div>
+                    <h5 style="font-size:0.9rem;color:var(--accent);margin-bottom:0.5rem;">Why the cap barely affects revenue</h5>
+                    <ul style="font-size:0.85rem;color:var(--text-secondary);padding-left:1.25rem;">
+                        <li style="margin-bottom:0.4rem;"><strong>People come to profit, not lose.</strong> A position at $0.01 means the user lost 98% of their investment. The difference between a $0.015 fee and a $0.01 fee is half a cent — irrelevant against a $0.49 loss.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>Cap only triggers at extreme crashes.</strong> For the cap to activate, the sell price must be far below entry. This is a rare edge case, not the common path.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>Revenue impact: effectively zero.</strong> The lost revenue per contract is $0.005 on a position worth $0.01. Even at scale, this rounds to nothing.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>It protects the user experience.</strong> A user who just lost 98% should be able to exit cleanly for whatever their position is worth — not pay a fee they can't afford.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">When does the cap actually kick in?</h5>
+                    <div style="overflow-x:auto;">
+                        <table class="sim-table" style="font-size:0.8rem;" id="capTable">
+                            <thead>
+                                <tr>
+                                    <th>Entry</th>
+                                    <th>Sell</th>
+                                    <th>Calculated Fee</th>
+                                    <th>Proceeds</th>
+                                    <th>Capped?</th>
+                                </tr>
+                            </thead>
+                            <tbody id="capTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pros & Cons Summary -->
+        <div class="sim-card" style="margin-top:2rem;">
+            <h3><span class="badge">VERDICT</span> Pros &amp; Cons Summary</h3>
+            <div style="overflow-x:auto;">
+                <table class="sim-table" style="font-size:0.8rem;min-width:700px;">
+                    <thead>
+                        <tr>
+                            <th style="width:25%;">Criteria</th>
+                            <th style="width:35%;background:rgba(225,112,85,0.08);">V1 — Sell Price</th>
+                            <th style="width:35%;background:rgba(0,206,201,0.08);">V2 — Entry Price (with cap)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Revenue (normal)</td>
+                            <td>~1.80% take rate</td>
+                            <td class="good">~1.88% take rate (+4%)</td>
+                        </tr>
+                        <tr>
+                            <td>Revenue (with bots)</td>
+                            <td class="bad">Drops to ~1.2% on churned trades</td>
+                            <td class="good">Stays at ~1.88% — immune to churn</td>
+                        </tr>
+                        <tr>
+                            <td>Bot exploit risk</td>
+                            <td class="bad">Churn-to-reset: 62% fee reduction</td>
+                            <td class="good">Churning costs the bot MORE (+19%)</td>
+                        </tr>
+                        <tr>
+                            <td>User gets trapped?</td>
+                            <td class="good">Never — fee scales with sell price</td>
+                            <td class="good">Never — cap at proceeds prevents it</td>
+                        </tr>
+                        <tr>
+                            <td>Fee predictability</td>
+                            <td>Fee changes as price moves — unknown until exit</td>
+                            <td class="good">Fee locked at entry — user always knows</td>
+                        </tr>
+                        <tr>
+                            <td>Self-trading across accounts</td>
+                            <td class="bad">Loser pays $0 (settlement), sell exit at extreme = tiny fee</td>
+                            <td>Loser pays $0 (settlement), but sell exit fee is based on original entry — harder to game</td>
+                        </tr>
+                        <tr>
+                            <td>Simplicity</td>
+                            <td>Two rules: sell uses sell price, settlement uses entry price</td>
+                            <td class="good">One rule: always use entry price, cap at proceeds</td>
+                        </tr>
+                        <tr>
+                            <td>Edge case: price moves toward midpoint</td>
+                            <td class="good">Higher fee (more revenue)</td>
+                            <td>Lower fee (less revenue) — rare case</td>
+                        </tr>
+                        <tr style="background:rgba(108,92,231,0.06);">
+                            <td style="font-weight:700;">Recommendation</td>
+                            <td style="color:var(--text-secondary);">Simpler but leaky</td>
+                            <td style="color:var(--accent);font-weight:700;">Recommended — higher revenue, bot-proof, predictable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- FAQ -->
 <section id="faq">
     <div class="container">
@@ -1364,6 +1835,161 @@ function update() {
 document.getElementById('sPrice').addEventListener('input', update);
 document.getElementById('sQty').addEventListener('input', update);
 update();
+
+// ========================
+// V1 vs V2 SCENARIO BUILDER
+// ========================
+
+function fmtK(n) {
+    if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return '$' + Math.round(n / 1e3).toLocaleString() + 'K';
+    return '$' + Math.round(n).toLocaleString();
+}
+
+function updateScenario() {
+    const entry = parseInt(document.getElementById('sScEntry').value) / 100;
+    const sell = parseInt(document.getElementById('sScSell').value) / 100;
+    const qty = parseInt(document.getElementById('sScQty').value);
+
+    document.getElementById('scEntry').textContent = '$' + entry.toFixed(2);
+    document.getElementById('scSell').textContent = '$' + sell.toFixed(2);
+    document.getElementById('scQty').textContent = qty;
+
+    const k = KT; // use initiator rate for comparison
+    const bellSell = sell * (1 - sell);
+    const bellEntry = entry * (1 - entry);
+    const proceeds = sell * qty;
+
+    const v1Fee = Math.round(k * qty * bellSell * 100) / 100;
+    const v2FeeRaw = Math.round(k * qty * bellEntry * 100) / 100;
+    const v2Fee = Math.min(v2FeeRaw, proceeds); // cap at proceeds
+    const capped = v2FeeRaw > proceeds;
+
+    // V1
+    document.getElementById('scV1Ref').textContent = '$' + sell.toFixed(2);
+    document.getElementById('scV1Bell').textContent = bellSell.toFixed(4);
+    document.getElementById('scV1FeePC').textContent = '$' + (k * bellSell).toFixed(5);
+    document.getElementById('scV1Fee').textContent = '$' + v1Fee.toFixed(2);
+    document.getElementById('scV1Net').textContent = '$' + (proceeds - v1Fee).toFixed(2);
+
+    // V2
+    document.getElementById('scV2Ref').textContent = '$' + entry.toFixed(2);
+    document.getElementById('scV2Bell').textContent = bellEntry.toFixed(4);
+    document.getElementById('scV2FeePC').textContent = '$' + (k * bellEntry).toFixed(5);
+    document.getElementById('scV2Fee').textContent = '$' + v2Fee.toFixed(2);
+    document.getElementById('scV2Net').textContent = '$' + (proceeds - v2Fee).toFixed(2);
+    document.getElementById('scV2Cap').textContent = capped ? 'Yes — capped at proceeds' : 'No';
+    document.getElementById('scV2Cap').style.color = capped ? 'var(--yellow)' : 'var(--green)';
+
+    // Diff
+    const diff = v2Fee - v1Fee;
+    const diffPct = v1Fee > 0 ? ((diff / v1Fee) * 100) : 0;
+    const diffEl = document.getElementById('scDiff');
+    const diffPctEl = document.getElementById('scDiffPct');
+    diffEl.textContent = (diff >= 0 ? '+' : '') + '$' + diff.toFixed(2);
+    diffEl.style.color = diff >= 0 ? 'var(--green)' : 'var(--red)';
+    diffPctEl.textContent = '(' + (diff >= 0 ? '+' : '') + diffPct.toFixed(0) + '% ' + (diff >= 0 ? 'more' : 'less') + ' with V2)';
+
+    const verdict = document.getElementById('scVerdict');
+    if (diff > 0) {
+        verdict.textContent = 'V2 earns more revenue here';
+        verdict.style.color = 'var(--accent)';
+    } else if (diff < 0) {
+        verdict.textContent = 'V1 earns more here (price moved toward midpoint)';
+        verdict.style.color = 'var(--high)';
+    } else {
+        verdict.textContent = 'Same revenue';
+        verdict.style.color = 'var(--text-secondary)';
+    }
+}
+
+document.getElementById('sScEntry').addEventListener('input', updateScenario);
+document.getElementById('sScSell').addEventListener('input', updateScenario);
+document.getElementById('sScQty').addEventListener('input', updateScenario);
+updateScenario();
+
+// ========================
+// REVENUE IMPACT CALCULATOR
+// ========================
+
+function updateRevenueImpact() {
+    const vol = parseInt(document.getElementById('sRiVol').value);
+    const botPct = parseInt(document.getElementById('sRiBot').value) / 100;
+
+    document.getElementById('riVol').textContent = fmtK(vol);
+    document.getElementById('riBotPct').textContent = Math.round(botPct * 100) + '%';
+
+    const v1NormalRate = 0.018;
+    const v2NormalRate = 0.0188;
+    const v1ChurnedRate = 0.0057; // bot pays ~0.57% after churn
+    const v2ChurnedRate = v2NormalRate; // V2 immune to churn
+
+    // Normal (no bots)
+    const v1Normal = vol * v1NormalRate;
+    const v2Normal = vol * v2NormalRate;
+    const normDiff = v2Normal - v1Normal;
+
+    document.getElementById('riNormVol').textContent = fmtK(vol);
+    document.getElementById('riNormV1').textContent = fmtK(v1Normal);
+    document.getElementById('riNormV2').textContent = fmtK(v2Normal);
+    document.getElementById('riNormDiff').textContent = '+' + fmtK(normDiff) + '/mo';
+    document.getElementById('riNormAnnual').textContent = '+' + fmtK(normDiff * 12) + '/yr';
+
+    // With bots
+    const churnedVol = vol * botPct;
+    const cleanVol = vol - churnedVol;
+    const v1Worst = cleanVol * v1NormalRate + churnedVol * v1ChurnedRate;
+    const v2Worst = vol * v2ChurnedRate; // all at normal rate, immune
+    const worstDiff = v2Worst - v1Worst;
+    const lostToBots = churnedVol * (v1NormalRate - v1ChurnedRate);
+
+    document.getElementById('riWorstChurn').textContent = fmtK(churnedVol) + ' (' + Math.round(botPct * 100) + '%)';
+    document.getElementById('riWorstV1').textContent = fmtK(v1Worst);
+    document.getElementById('riWorstV2').textContent = fmtK(v2Worst);
+    document.getElementById('riWorstDiff').textContent = '+' + fmtK(worstDiff) + '/mo';
+    document.getElementById('riWorstAnnual').textContent = '+' + fmtK(worstDiff * 12) + '/yr';
+    document.getElementById('riWorstLost').textContent = fmtK(lostToBots) + '/mo';
+}
+
+document.getElementById('sRiVol').addEventListener('input', updateRevenueImpact);
+document.getElementById('sRiBot').addEventListener('input', updateRevenueImpact);
+updateRevenueImpact();
+
+// ========================
+// CAP TRIGGER TABLE
+// ========================
+
+function buildCapTable() {
+    const scenarios = [
+        { entry: 0.50, sell: 0.40 },
+        { entry: 0.50, sell: 0.20 },
+        { entry: 0.50, sell: 0.05 },
+        { entry: 0.50, sell: 0.01 },
+        { entry: 0.30, sell: 0.10 },
+        { entry: 0.30, sell: 0.02 },
+        { entry: 0.80, sell: 0.05 },
+        { entry: 0.80, sell: 0.01 },
+    ];
+    const tbody = document.getElementById('capTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    scenarios.forEach(s => {
+        const fee = KT * s.entry * (1 - s.entry);
+        const proceeds = s.sell;
+        const capped = fee > proceeds;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>$${s.entry.toFixed(2)}</td>
+            <td>$${s.sell.toFixed(2)}</td>
+            <td>$${fee.toFixed(4)}</td>
+            <td>$${proceeds.toFixed(2)}</td>
+            <td style="font-weight:700;color:${capped ? 'var(--yellow)' : 'var(--green)'};">${capped ? 'Yes — capped at $' + proceeds.toFixed(2) : 'No'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+buildCapTable();
 
 // ========================
 // PARTIAL FILL SPLIT CALCULATOR
