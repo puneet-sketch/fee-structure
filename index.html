@@ -528,6 +528,7 @@
     <div class="nav-inner">
         <div class="logo">YourPlatform</div>
         <div class="nav-links">
+            <a href="#tldr">TL;DR</a>
             <a href="#how">How It Works</a>
             <a href="#dashboard">Dashboard</a>
             <a href="#calculator">Calculator</a>
@@ -554,7 +555,116 @@
         </div>
         <div class="hero-stat">
             <div class="num">$0</div>
-            <div class="label">Fee if you lose</div>
+            <div class="label">Out-of-pocket fee if you lose</div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TL;DR -->
+<section id="tldr" style="padding-top:2rem;">
+    <div class="container">
+        <div class="section-label">TL;DR</div>
+        <div class="section-title">The complete model in 60 seconds</div>
+
+        <div class="card highlight" style="margin-bottom:1.5rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                <div>
+                    <h3 style="margin-bottom:1rem;font-size:1rem;">The Formula</h3>
+                    <div style="background:var(--bg);border-radius:10px;padding:1.25rem;font-family:monospace;font-size:1.1rem;text-align:center;margin-bottom:1rem;">
+                        fee = <span style="color:var(--primary-light);">k</span> &times; <span style="color:var(--accent);">qty</span> &times; <span style="color:var(--yellow);">p</span> &times; <span style="color:var(--yellow);">(1 &minus; p)</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;">
+                        <div><span style="color:var(--primary-light);font-weight:600;">k</span> = 0.06 (initiator/taker) or 0.02 (patient/maker)</div>
+                        <div><span style="color:var(--accent);font-weight:600;">qty</span> = number of contracts</div>
+                        <div><span style="color:var(--yellow);font-weight:600;">p &times; (1&minus;p)</span> = bell curve factor (peaks at 50/50, zero at extremes)</div>
+                    </div>
+                    <div style="margin-top:1rem;background:var(--bg);border-radius:10px;padding:1rem;">
+                        <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem;">But if the fee exceeds half the exit proceeds:</div>
+                        <div style="font-family:monospace;font-size:1rem;text-align:center;">
+                            fee = min(fee, <span style="color:var(--green);">50%</span> &times; proceeds)
+                        </div>
+                        <div style="font-size:0.75rem;color:var(--green);text-align:center;margin-top:0.4rem;">User always keeps at least half</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom:1rem;font-size:1rem;">Key Rules</h3>
+                    <div style="font-size:0.85rem;color:var(--text-secondary);line-height:2.1;">
+                        <div><span style="color:var(--green);font-weight:700;">1.</span> Entry is <strong style="color:var(--green);">always free</strong> &mdash; fee only at exit (sell or settlement)</div>
+                        <div><span style="color:var(--green);font-weight:700;">2.</span> Fee always uses <strong style="color:var(--accent);">entry price</strong> for the bell curve &mdash; never the sell price</div>
+                        <div><span style="color:var(--green);font-weight:700;">3.</span> Patient traders pay <strong style="color:var(--accent);">1/3</strong> the fee of initiators (0.02 vs 0.06)</div>
+                        <div><span style="color:var(--green);font-weight:700;">4.</span> Fee is capped at <strong style="color:var(--accent);">50% of exit proceeds</strong> &mdash; user always keeps at least half</div>
+                        <div><span style="color:var(--green);font-weight:700;">5.</span> At settlement, losers pay $0 out of pocket &mdash; their fee is <strong style="color:var(--accent);">deducted from winners' payouts</strong></div>
+                        <div><span style="color:var(--green);font-weight:700;">6.</span> <strong style="color:var(--accent);">Churn-proof</strong> &mdash; selling and re-buying to reset entry price costs the bot MORE, not less</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;">
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Target Rate</div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--primary-light);margin-top:0.25rem;">~2%</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">combined at midpoint</div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Max Fee</div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--accent);margin-top:0.25rem;">5.7%</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">of investment (extreme longshots)</div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Fee Cap</div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--green);margin-top:0.25rem;">50%</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">max of exit proceeds</div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Loser Pays</div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--yellow);margin-top:0.25rem;">$0</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">out of pocket</div>
+            </div>
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+                <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Bot Exploit</div>
+                <div style="font-size:1.3rem;font-weight:800;color:var(--red);margin-top:0.25rem;">Dead</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">churning costs more</div>
+            </div>
+        </div>
+
+        <!-- Concept Map -->
+        <div class="card" style="margin-top:2rem;">
+            <h3 style="margin-bottom:1.25rem;">Concepts Covered in This Document</h3>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+                <a href="#how" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 1</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Bell Curve Fee Model</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">Why p &times; (1&minus;p), how uncertainty drives fees, free entry</div>
+                </a>
+                <a href="#dashboard" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 2</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Taker vs Maker Rates</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">0.06 vs 0.02 constants, partial fills, blended rates</div>
+                </a>
+                <a href="#settlement" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 3</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Settlement Mechanics</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">How winners and losers are handled, loser fee from winner pool</div>
+                </a>
+                <a href="#versions" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 4</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Entry Price Model (V2)</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">Why we always use entry price, V1 vs V2 comparison</div>
+                </a>
+                <a href="#feecap" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 5</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Dynamic Fee Cap</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">50% proceeds cap, why it exists, interactive explorer</div>
+                </a>
+                <a href="#compare" style="text-decoration:none;background:var(--bg);border-radius:10px;padding:1rem;display:block;">
+                    <div style="font-size:0.7rem;color:var(--primary-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">Section 6</div>
+                    <div style="font-size:0.9rem;color:var(--text);font-weight:600;">Anti-Gaming &amp; Industry</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">Churn-proof design, bot exploits, market comparison</div>
+                </a>
+            </div>
         </div>
     </div>
 </section>
@@ -609,12 +719,12 @@
             <div class="how-card">
                 <div class="num">3</div>
                 <h4>Fee is charged only when you exit</h4>
-                <p>Entering a trade is free. You only pay commission when you sell your position or when the event resolves. If you lose and get $0, your fee is $0 too &mdash; we never charge more than your payout.</p>
+                <p>Entering a trade is free. You only pay commission when you sell your position or when the event resolves. If you lose at settlement, you pay $0 out of pocket &mdash; your calculated fee is deducted from the winners' payouts instead.</p>
             </div>
             <div class="how-card">
                 <div class="num">4</div>
-                <h4>Fee can never exceed your payout</h4>
-                <p>Mathematically guaranteed. As your position drops in value, the fee drops even faster. The maximum fee on any trade is 5.7% of what you invested &mdash; and that only happens on extreme longshots. At typical prices, it's 1-3%.</p>
+                <h4>Fee can never take more than half your exit</h4>
+                <p>When you sell before settlement, we cap the fee at 50% of your sale proceeds. You always keep at least half of what you're cashing out. The platform always collects something. Both sides win.</p>
             </div>
         </div>
     </div>
@@ -658,11 +768,97 @@
                         </div>
                     </div>
                     <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:1rem;">
-                        If they <strong>lost</strong>: payout = $0, commission = $0. They only lose what they invested.
+                        If they <strong>lost</strong>: payout = $0, out-of-pocket fee = $0. Their calculated fee is deducted from the winners' payouts instead. They only lose what they invested.
                     </p>
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- SETTLEMENT MECHANICS -->
+<section id="settlement" style="padding-top:2rem;">
+    <div class="container">
+        <div class="section-label">Settlement Mechanics</div>
+        <div class="section-title">How fees work when the event resolves</div>
+        <div class="section-desc">At settlement, losers pay nothing out of pocket. Their calculated trading fee is deducted from the winners' payouts. The platform always collects revenue from both sides.</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
+            <!-- Winner -->
+            <div class="card" style="border-color:var(--green);position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);"></div>
+                <h3 style="color:var(--green);margin-bottom:1rem;">Winner at Settlement</h3>
+                <div style="background:var(--bg);border-radius:10px;padding:1.25rem;font-size:0.9rem;">
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Gross payout</span><span>$1.00 per contract</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Minus: own trading fee</span><span style="color:var(--high);">&minus; k &times; entry_p &times; (1&minus;entry_p)</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Minus: loser's trading fee</span><span style="color:var(--high);">&minus; k &times; loser_entry_p &times; (1&minus;loser_entry_p)</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-top:1px solid var(--border);margin-top:0.3rem;padding-top:0.6rem;">
+                        <span style="font-weight:600;">Net received</span><span style="font-weight:700;color:var(--green);">Payout &minus; both fees</span>
+                    </div>
+                </div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:1rem;">The winner effectively pays for the loser's fee. This ensures the platform always collects revenue on every resolved trade, even from losers.</p>
+            </div>
+            <!-- Loser -->
+            <div class="card" style="border-color:var(--red);position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);"></div>
+                <h3 style="color:var(--red);margin-bottom:1rem;">Loser at Settlement</h3>
+                <div style="background:var(--bg);border-radius:10px;padding:1.25rem;font-size:0.9rem;">
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Gross payout</span><span style="color:var(--red);">$0.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Out-of-pocket fee</span><span style="color:var(--green);font-weight:600;">$0.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--text-secondary);">Fee status</span><span style="color:var(--yellow);">Collected from winner pool</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-top:1px solid var(--border);margin-top:0.3rem;padding-top:0.6rem;">
+                        <span style="font-weight:600;">Net result</span><span style="font-weight:700;color:var(--red);">Lost investment only</span>
+                    </div>
+                </div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-top:1rem;">The loser just loses their original investment. They don't pay any additional fee. Their calculated fee is instead deducted from the winning side's payout.</p>
+            </div>
+        </div>
+
+        <!-- Worked example -->
+        <div class="card highlight">
+            <h3 style="margin-bottom:1rem;">Example: 100 contracts at $0.40 Yes / $0.60 No</h3>
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;background:var(--bg);border-radius:12px;overflow:hidden;">
+                <div style="padding:1.5rem;">
+                    <h4 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);margin-bottom:1rem;">Yes Buyer (Winner)</h4>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Invested</span><span style="font-weight:600;">$40.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Gross payout</span><span style="font-weight:600;color:var(--green);">$100.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Own fee (taker, entry $0.40)</span><span style="font-weight:600;color:var(--high);">&minus;$1.44</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Loser's fee (maker, entry $0.60)</span><span style="font-weight:600;color:var(--high);">&minus;$0.48</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.5rem 0;font-size:0.9rem;border-top:1px solid var(--border);margin-top:0.3rem;">
+                        <span style="font-weight:700;">Net received</span><span style="font-weight:800;color:var(--green);">$98.08</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--green);margin-top:0.25rem;">Profit: +$58.08 on $40 invested</div>
+                </div>
+                <div style="width:1px;background:var(--border);"></div>
+                <div style="padding:1.5rem;">
+                    <h4 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--primary-light);margin-bottom:1rem;">No Buyer (Loser)</h4>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Invested</span><span style="font-weight:600;">$60.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Gross payout</span><span style="font-weight:600;color:var(--red);">$0.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Out-of-pocket fee</span><span style="font-weight:600;color:var(--green);">$0.00</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.85rem;"><span style="color:var(--text-secondary);">Fee collected from winner</span><span style="font-weight:600;color:var(--yellow);">$0.48</span></div>
+                    <div style="display:flex;justify-content:space-between;padding:0.5rem 0;font-size:0.9rem;border-top:1px solid var(--border);margin-top:0.3rem;">
+                        <span style="font-weight:700;">Net result</span><span style="font-weight:800;color:var(--red);">&minus;$60.00</span>
+                    </div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem;">Lost investment only, no extra fee</div>
+                </div>
+            </div>
+            <div style="margin-top:1.25rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1rem;background:var(--bg);border-radius:10px;">
+                <div style="text-align:center;">
+                    <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Platform Revenue</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:var(--accent);">$1.92</div>
+                    <div style="font-size:0.7rem;color:var(--text-secondary);">$1.44 (winner) + $0.48 (loser)</div>
+                </div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);">on a $100 pool =</div>
+                <div style="text-align:center;">
+                    <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.08em;">Effective Rate</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:var(--primary-light);">1.92%</div>
+                </div>
+            </div>
+        </div>
+
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:1.5rem;text-align:center;">
+            <strong style="color:var(--text);">Why this matters:</strong> Without collecting from losers, the platform misses ~30% of potential revenue on every resolved market. With this mechanism, the platform earns on both sides while losers still pay nothing out of pocket.
+        </p>
     </div>
 </section>
 
@@ -1303,20 +1499,20 @@
                     <h5 style="color:var(--green);margin-bottom:0.5rem;">For users</h5>
                     <ul>
                         <li><strong>Free to enter</strong> &mdash; try the platform with zero upfront cost</li>
-                        <li><strong>Know your fee upfront</strong> &mdash; displayed before you confirm</li>
-                        <li><strong>If you lose, you pay nothing</strong> &mdash; commission is capped at your payout</li>
+                        <li><strong>Know your fee upfront</strong> &mdash; locked at entry, displayed before you confirm</li>
+                        <li><strong>If you lose, you pay $0</strong> &mdash; your fee is collected from winners instead</li>
                         <li><strong>Patient traders pay less</strong> &mdash; post an order and wait, get 67% off</li>
-                        <li><strong>Fee can never trap you</strong> &mdash; always costs less than your position</li>
+                        <li><strong>Fee can never trap you</strong> &mdash; capped at 50% of exit proceeds, always keep at least half</li>
                     </ul>
                 </div>
                 <div>
                     <h5 style="color:var(--accent);margin-bottom:0.5rem;">For the business</h5>
                     <ul>
                         <li><strong>~2% revenue</strong> on trade volume &mdash; sustainable without VC subsidies</li>
-                        <li><strong>Proven model</strong> &mdash; same approach as Kalshi ($263M revenue in 2025)</li>
+                        <li><strong>Collects from both sides</strong> &mdash; loser's fee deducted from winner pool, no revenue missed</li>
+                        <li><strong>Churn-proof</strong> &mdash; bots pay MORE for trying to game the system, not less</li>
                         <li><strong>Free entry drives adoption</strong> &mdash; removes the biggest friction point</li>
-                        <li><strong>Accurate prices</strong> &mdash; smart fees don't distort the market</li>
-                        <li><strong>Simple to explain</strong> &mdash; "commission only at exit, losers pay nothing"</li>
+                        <li><strong>Simple to explain</strong> &mdash; "fee at exit only, losers pay nothing out of pocket, fee capped at 50% of proceeds"</li>
                     </ul>
                 </div>
             </div>
@@ -1353,14 +1549,15 @@
                 <h3>Entry Price Model</h3>
                 <p style="color:var(--text-secondary);font-size:0.9rem;">Bell curve <strong>always</strong> uses the price the user originally paid.</p>
                 <div class="ver-rule">
-                    <strong>Sell exit:</strong> fee based on <span style="color:var(--accent);">entry price</span>, capped at proceeds<br>
-                    <strong>Settlement:</strong> fee based on <span style="color:var(--accent);">entry price</span>, capped at payout
+                    <strong>Sell exit:</strong> fee based on <span style="color:var(--accent);">entry price</span>, capped at 50% of proceeds<br>
+                    <strong>Settlement:</strong> fee based on <span style="color:var(--accent);">entry price</span>, loser's fee from winner pool
                 </div>
                 <ul>
                     <li>Fee is locked in at entry — user knows their fee from day one</li>
                     <li>Churn exploit is <strong>dead</strong> — selling and re-buying costs more</li>
                     <li>Higher platform revenue in most scenarios</li>
-                    <li class="good"><strong>Cap at proceeds</strong> prevents trapping — see solution below</li>
+                    <li class="good"><strong>50% cap</strong> — user always keeps at least half of exit proceeds</li>
+                    <li class="good"><strong>Loser fee from winners</strong> — platform always collects, losers pay $0</li>
                 </ul>
             </div>
         </div>
@@ -1598,55 +1795,125 @@
             </div>
         </div>
 
-        <!-- Solving the trap problem -->
-        <div class="sim-card" style="border-color:var(--accent);margin-top:2rem;">
-            <h3><span class="badge" style="background:rgba(0,206,201,0.15);color:var(--accent);">SOLUTION</span> How V2 prevents trapping users</h3>
+        <!-- Dynamic Fee Cap -->
+        <div id="feecap" class="sim-card" style="border-color:var(--accent);margin-top:2rem;">
+            <h3><span class="badge" style="background:rgba(0,206,201,0.15);color:var(--accent);">DYNAMIC FEE CAP</span> How V2 prevents trapping users</h3>
             <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.25rem;">
-                The one risk with entry price: if the price crashes far below entry, the fee (based on entry) could exceed the sell proceeds. The fix is simple — <strong>cap the fee at the proceeds</strong>.
+                With entry price model, if the price crashes far below entry, the calculated fee could exceed the exit proceeds. Simply capping at <code>min(fee, proceeds)</code> would give the user $0 &mdash; defeating the purpose of exiting. Instead, we <strong>cap the fee at 50% of proceeds</strong>, so the user always keeps at least half and the platform always collects something.
             </p>
 
+            <!-- The formula -->
+            <div style="background:var(--bg);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;">
+                <div style="font-family:monospace;font-size:1.1rem;margin-bottom:0.75rem;">
+                    fee = min(<span style="color:var(--primary-light);">k &times; qty &times; entry_p &times; (1&minus;entry_p)</span>, <span style="color:var(--green);">0.50 &times; qty &times; sell_p</span>)
+                </div>
+                <div style="font-size:0.8rem;color:var(--text-secondary);">
+                    <span style="color:var(--primary-light);">Normal formula</span> &mdash; used when fee is reasonable &nbsp;&nbsp;|&nbsp;&nbsp;
+                    <span style="color:var(--green);">50% cap</span> &mdash; kicks in only when fee would exceed half of proceeds
+                </div>
+            </div>
+
+            <!-- The problem scenario -->
             <div style="background:var(--bg);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
-                <h5 style="font-size:0.9rem;margin-bottom:1rem;">Example: User entered at $0.50, price crashed to $0.01</h5>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;">
+                <h5 style="font-size:0.9rem;margin-bottom:1rem;">Example: Entered at $0.50, 100 qty, price crashed to $0.01</h5>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;text-align:center;">
                     <div>
-                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Calculated fee</div>
-                        <div style="font-size:1.1rem;font-weight:700;">$0.015/contract</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">0.06 &times; 0.50 &times; 0.50</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Calculated Fee</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--red);">$1.50</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">0.06 &times; 100 &times; 0.25</div>
                     </div>
                     <div>
-                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Sell proceeds</div>
-                        <div style="font-size:1.1rem;font-weight:700;">$0.01/contract</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">Position is nearly worthless</div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Exit Proceeds</div>
+                        <div style="font-size:1.1rem;font-weight:700;">$1.00</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">100 &times; $0.01</div>
                     </div>
                     <div>
-                        <div style="font-size:0.7rem;color:var(--accent);text-transform:uppercase;">Actual fee (capped)</div>
-                        <div style="font-size:1.1rem;font-weight:800;color:var(--accent);">$0.01/contract</div>
-                        <div style="font-size:0.75rem;color:var(--green);">min(calculated, proceeds)</div>
+                        <div style="font-size:0.7rem;color:var(--red);text-transform:uppercase;">Old cap (min)</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--red);">$1.00</div>
+                        <div style="font-size:0.75rem;color:var(--red);">User gets $0 &mdash; useless</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.7rem;color:var(--green);text-transform:uppercase;">50% Cap (new)</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:var(--green);">$0.50</div>
+                        <div style="font-size:0.75rem;color:var(--green);">User keeps $0.50</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive fee cap explorer -->
+            <div style="background:var(--bg);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;">
+                <h5 style="font-size:0.9rem;margin-bottom:1.25rem;">Interactive Fee Cap Explorer</h5>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                    <div>
+                        <div class="slider-row">
+                            <label>Entry Price <span class="val" id="capEntry">$0.50</span></label>
+                            <input type="range" id="sCapEntry" min="5" max="95" value="50">
+                        </div>
+                        <div class="slider-row">
+                            <label>Sell Price <span class="val" id="capSell">$0.01</span></label>
+                            <input type="range" id="sCapSell" min="1" max="50" value="1">
+                        </div>
+                        <div class="slider-row">
+                            <label>Quantity <span class="val" id="capQty">100</span></label>
+                            <input type="range" id="sCapQty" min="10" max="2000" value="100" step="10">
+                        </div>
+                    </div>
+                    <div>
+                        <div style="background:var(--bg-card);border-radius:10px;padding:1.25rem;">
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">Calculated fee</span>
+                                <span style="font-weight:600;" id="capCalcFee">$1.50</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">Exit proceeds</span>
+                                <span style="font-weight:600;" id="capProceeds">$1.00</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">50% cap</span>
+                                <span style="font-weight:600;color:var(--green);" id="capHalf">$0.50</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.6rem 0;font-size:0.9rem;border-top:1px solid var(--border);margin-top:0.4rem;">
+                                <span style="font-weight:700;">Actual fee charged</span>
+                                <span style="font-weight:800;color:var(--accent);font-size:1rem;" id="capActualFee">$0.50</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">User receives</span>
+                                <span style="font-weight:700;color:var(--green);" id="capUserGets">$0.50</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">Cap active?</span>
+                                <span style="font-weight:700;" id="capActive">Yes</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;">
+                                <span style="color:var(--text-secondary);">Effective k</span>
+                                <span style="font-weight:600;color:var(--primary-light);" id="capEffK">0.020</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
                 <div>
-                    <h5 style="font-size:0.9rem;color:var(--accent);margin-bottom:0.5rem;">Why the cap barely affects revenue</h5>
+                    <h5 style="font-size:0.9rem;color:var(--accent);margin-bottom:0.5rem;">Why 50% is the right cap</h5>
                     <ul style="font-size:0.85rem;color:var(--text-secondary);padding-left:1.25rem;">
-                        <li style="margin-bottom:0.4rem;"><strong>People come to profit, not lose.</strong> A position at $0.01 means the user lost 98% of their investment. The difference between a $0.015 fee and a $0.01 fee is half a cent — irrelevant against a $0.49 loss.</li>
-                        <li style="margin-bottom:0.4rem;"><strong>Cap only triggers at extreme crashes.</strong> For the cap to activate, the sell price must be far below entry. This is a rare edge case, not the common path.</li>
-                        <li style="margin-bottom:0.4rem;"><strong>Revenue impact: effectively zero.</strong> The lost revenue per contract is $0.005 on a position worth $0.01. Even at scale, this rounds to nothing.</li>
-                        <li style="margin-bottom:0.4rem;"><strong>It protects the user experience.</strong> A user who just lost 98% should be able to exit cleanly for whatever their position is worth — not pay a fee they can't afford.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>User is already losing badly.</strong> Their position crashed from $0.50 to $0.01 &mdash; they've lost 98%. Taking more than half their last dollar feels predatory.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>Encourages exits over holding.</strong> Users are more likely to sell (and pay some fee) if they keep half, vs. getting nothing.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>Alternative is $0 revenue.</strong> If users hold to settlement instead of exiting, they lose everything and their fee gets deducted from winners &mdash; but the sell-exit fee revenue is lost entirely.</li>
+                        <li style="margin-bottom:0.4rem;"><strong>Can't be gamed.</strong> Users would have to crash their own position to near-zero (losing 98%+) to trigger the cap &mdash; the math doesn't work for exploitation.</li>
                     </ul>
                 </div>
                 <div>
-                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">When does the cap actually kick in?</h5>
+                    <h5 style="font-size:0.9rem;margin-bottom:0.5rem;">Full fee cap breakdown (taker, entry $0.50, 100 qty)</h5>
                     <div style="overflow-x:auto;">
                         <table class="sim-table" style="font-size:0.8rem;" id="capTable">
                             <thead>
                                 <tr>
-                                    <th>Entry</th>
-                                    <th>Sell</th>
-                                    <th>Calculated Fee</th>
+                                    <th>Sell Price</th>
                                     <th>Proceeds</th>
-                                    <th>Capped?</th>
+                                    <th>Normal Fee</th>
+                                    <th>Capped Fee</th>
+                                    <th>User Keeps</th>
                                 </tr>
                             </thead>
                             <tbody id="capTableBody"></tbody>
@@ -1687,7 +1954,7 @@
                         <tr>
                             <td>User gets trapped?</td>
                             <td class="good">Never — fee scales with sell price</td>
-                            <td class="good">Never — cap at proceeds prevents it</td>
+                            <td class="good">Never — 50% cap ensures user always keeps half</td>
                         </tr>
                         <tr>
                             <td>Fee predictability</td>
@@ -1702,7 +1969,7 @@
                         <tr>
                             <td>Simplicity</td>
                             <td>Two rules: sell uses sell price, settlement uses entry price</td>
-                            <td class="good">One rule: always use entry price, cap at proceeds</td>
+                            <td class="good">One rule: always use entry price, 50% cap on proceeds</td>
                         </tr>
                         <tr>
                             <td>Edge case: price moves toward midpoint</td>
@@ -1741,7 +2008,11 @@
             </div>
             <div class="faq-item">
                 <div class="faq-q">Can the commission ever be more than my payout?</div>
-                <div class="faq-a"><p>No. This is mathematically impossible with our model. As your position drops in value, the commission drops even faster. The maximum commission on any single trade is about 5.7% of what you invested (on extreme longshots). At typical prices, it's 1-3%.</p></div>
+                <div class="faq-a"><p>No. We cap the commission at 50% of your exit proceeds. If you sell a position, you always keep at least half of the sale value. The platform never takes more than half. In normal conditions (prices above 2 cents), the fee is much lower than 50% &mdash; typically 1-3%.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">What happens to the loser's fee at settlement?</div>
+                <div class="faq-a"><p>At settlement, losers get $0 payout and pay $0 out of pocket. However, the platform still collects the loser's calculated trading fee &mdash; it is deducted from the winners' payouts. This means the platform earns on both sides of every resolved market. Winners receive their payout minus their own fee and minus the losers' fees.</p></div>
             </div>
             <div class="faq-item">
                 <div class="faq-q">How do I pay less commission?</div>
@@ -1760,7 +2031,7 @@
 </section>
 
 <footer>
-    <p>&copy; 2026 YourPlatform &mdash; Commission Model v3 &mdash; Smart Pricing &middot; Free Entry &middot; Exit-Only Commission</p>
+    <p>&copy; 2026 YourPlatform &mdash; Commission Model v4 &mdash; Smart Pricing &middot; Free Entry &middot; Exit-Only Commission &middot; 50% Fee Cap &middot; Loser Fee from Winners</p>
 </footer>
 
 <script>
@@ -1863,8 +2134,8 @@ function updateScenario() {
 
     const v1Fee = Math.round(k * qty * bellSell * 100) / 100;
     const v2FeeRaw = Math.round(k * qty * bellEntry * 100) / 100;
-    const v2Fee = Math.min(v2FeeRaw, proceeds); // cap at proceeds
-    const capped = v2FeeRaw > proceeds;
+    const v2Fee = Math.min(v2FeeRaw, proceeds * 0.5); // cap at 50% of proceeds
+    const capped = v2FeeRaw > proceeds * 0.5;
 
     // V1
     document.getElementById('scV1Ref').textContent = '$' + sell.toFixed(2);
@@ -1879,7 +2150,7 @@ function updateScenario() {
     document.getElementById('scV2FeePC').textContent = '$' + (k * bellEntry).toFixed(5);
     document.getElementById('scV2Fee').textContent = '$' + v2Fee.toFixed(2);
     document.getElementById('scV2Net').textContent = '$' + (proceeds - v2Fee).toFixed(2);
-    document.getElementById('scV2Cap').textContent = capped ? 'Yes — capped at proceeds' : 'No';
+    document.getElementById('scV2Cap').textContent = capped ? 'Yes — capped at 50% of proceeds' : 'No';
     document.getElementById('scV2Cap').style.color = capped ? 'var(--yellow)' : 'var(--green)';
 
     // Diff
@@ -1961,35 +2232,70 @@ updateRevenueImpact();
 // ========================
 
 function buildCapTable() {
-    const scenarios = [
-        { entry: 0.50, sell: 0.40 },
-        { entry: 0.50, sell: 0.20 },
-        { entry: 0.50, sell: 0.05 },
-        { entry: 0.50, sell: 0.01 },
-        { entry: 0.30, sell: 0.10 },
-        { entry: 0.30, sell: 0.02 },
-        { entry: 0.80, sell: 0.05 },
-        { entry: 0.80, sell: 0.01 },
-    ];
+    const ALPHA = 0.50; // user keeps at least 50%
+    const QTY = 100;
+    const sellPrices = [0.05, 0.03, 0.02, 0.015, 0.01, 0.005, 0.001];
     const tbody = document.getElementById('capTableBody');
     if (!tbody) return;
     tbody.innerHTML = '';
-    scenarios.forEach(s => {
-        const fee = KT * s.entry * (1 - s.entry);
-        const proceeds = s.sell;
-        const capped = fee > proceeds;
+    const entryP = 0.50;
+    const normalFee = KT * QTY * entryP * (1 - entryP);
+    sellPrices.forEach(sp => {
+        const proceeds = sp * QTY;
+        const cappedFee = Math.min(normalFee, ALPHA * proceeds);
+        const isCapped = normalFee > ALPHA * proceeds;
+        const userKeeps = proceeds - cappedFee;
         const tr = document.createElement('tr');
+        tr.style.cssText = isCapped ? 'background:rgba(253,203,110,0.04);' : '';
         tr.innerHTML = `
-            <td>$${s.entry.toFixed(2)}</td>
-            <td>$${s.sell.toFixed(2)}</td>
-            <td>$${fee.toFixed(4)}</td>
+            <td style="color:var(--text);font-weight:600;">$${sp.toFixed(3)}</td>
             <td>$${proceeds.toFixed(2)}</td>
-            <td style="font-weight:700;color:${capped ? 'var(--yellow)' : 'var(--green)'};">${capped ? 'Yes — capped at $' + proceeds.toFixed(2) : 'No'}</td>
+            <td>${isCapped ? '<span style="text-decoration:line-through;color:var(--text-secondary);">$' + normalFee.toFixed(2) + '</span>' : '$' + normalFee.toFixed(2)}</td>
+            <td style="font-weight:700;color:${isCapped ? 'var(--yellow)' : 'var(--text)'};">$${cappedFee.toFixed(2)}${isCapped ? ' <span style="font-size:0.7rem;font-weight:400;">(50%)</span>' : ''}</td>
+            <td style="font-weight:700;color:var(--green);">$${userKeeps.toFixed(2)}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 buildCapTable();
+
+// ========================
+// DYNAMIC FEE CAP EXPLORER
+// ========================
+
+function updateCapExplorer() {
+    const ALPHA = 0.50;
+    const entryP = parseInt(document.getElementById('sCapEntry').value) / 100;
+    const sellP = parseInt(document.getElementById('sCapSell').value) / 100;
+    const qty = parseInt(document.getElementById('sCapQty').value);
+
+    document.getElementById('capEntry').textContent = '$' + entryP.toFixed(2);
+    document.getElementById('capSell').textContent = '$' + sellP.toFixed(2);
+    document.getElementById('capQty').textContent = qty;
+
+    const normalFee = KT * qty * entryP * (1 - entryP);
+    const proceeds = sellP * qty;
+    const halfProceeds = ALPHA * proceeds;
+    const actualFee = Math.min(normalFee, halfProceeds);
+    const isCapped = normalFee > halfProceeds;
+    const userGets = proceeds - actualFee;
+    const effK = isCapped ? (actualFee / (qty * entryP * (1 - entryP))) : KT;
+
+    document.getElementById('capCalcFee').textContent = '$' + normalFee.toFixed(2);
+    document.getElementById('capCalcFee').style.color = isCapped ? 'var(--red)' : 'var(--text)';
+    document.getElementById('capProceeds').textContent = '$' + proceeds.toFixed(2);
+    document.getElementById('capHalf').textContent = '$' + halfProceeds.toFixed(2);
+    document.getElementById('capActualFee').textContent = '$' + actualFee.toFixed(2);
+    document.getElementById('capUserGets').textContent = '$' + userGets.toFixed(2);
+    document.getElementById('capActive').textContent = isCapped ? 'Yes — fee reduced' : 'No — normal fee applies';
+    document.getElementById('capActive').style.color = isCapped ? 'var(--yellow)' : 'var(--green)';
+    document.getElementById('capEffK').textContent = effK.toFixed(4);
+}
+
+document.getElementById('sCapEntry').addEventListener('input', updateCapExplorer);
+document.getElementById('sCapSell').addEventListener('input', updateCapExplorer);
+document.getElementById('sCapQty').addEventListener('input', updateCapExplorer);
+updateCapExplorer();
 
 // ========================
 // PARTIAL FILL SPLIT CALCULATOR
